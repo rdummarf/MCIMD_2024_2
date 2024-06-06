@@ -1,0 +1,551 @@
+---
+title: "Lista 1 - Smoothing"
+author:
+  - name: Andreia Queiroz Correia Dummar (222103912)
+    id: aqcd
+    email: aqcorreia@gmail.com
+  - name: Fernando da Silva Costa (232102946)
+    id: fsc
+    email: 232102946@aluno.unb.br
+  - name: Roberto Jorge Dummar FIlho (232103587)
+    id: rjdf
+    email: 232103587@aluno.unb.br
+
+prefer-html: true
+format: html
+editor: visual
+---
+
+```{r}
+
+library(ggplot2)
+library(palmerpenguins)
+library(dplyr)
+library(MASS)
+library(plotly)
+library(FactoMineR)
+library(factoextra)
+
+suppressMessages(library(ggplot2))
+suppressMessages(library(palmerpenguins))
+suppressMessages(library(dplyr))
+suppressMessages(library(MASS))
+suppressMessages(library(FactoMineR))
+suppressMessages(library(factoextra))
+
+# Carregar o conjunto de dados utilizado na tarefa
+data("penguins")
+
+# Remover NAs do conjunto de dados utilizado
+penguins <- na.omit(penguins)
+
+# Filtrar dados para remover NAs
+penguins_filtered <- penguins %>%
+  filter(!is.na(flipper_length_mm), !is.na(body_mass_g), !is.na(bill_length_mm), !is.na(bill_depth_mm))
+```
+
+# 1) Densidades univariadas.
+
+## a. Faça um histograma de "flipper_length_mm". Qual largura de classe usou? Como escolheu?
+
+```{r}
+
+# Total de linhas da tabela
+total_rows <- nrow(penguins)
+
+# Fórmula de Sturges 
+no_classes <- ceiling(1 + log2(total_rows))
+
+penguins |> ggplot(aes(x = flipper_length_mm)) + geom_histogram(colour = 7, fill="blue", bins = no_classes)
+
+```
+
+[Comentário:]{.underline}
+
+O histograma foi construído a partir da frequência dos valores presentes na variável "flipper_length_mm". A largura de classe utilizada foi o valor de 10, obtida a partir da utilização do método de Sturges (Sturges, 1926), o qual é calculado utilizando a seguinte fórmula:
+
+$$
+k = 1 + \log_2(n)
+$$
+
+onde $n$ é o número de observações no conjunto de dados.
+
+## b. Faça três gráficos da estimativa da densidade de "flipper_length_mm" com valores do parâmetro de largura de banda pequeno, médio e grande.
+
+```{r}
+# Calcular a largura de banda usando a regra de Silverman
+tam_flipper <- penguins$flipper_length_mm
+n <- length(tam_flipper)
+sigma <- sd(tam_flipper)
+IQR <- IQR(tam_flipper)
+h_silverman <- 0.9 * min(sigma, IQR / 1.34) * n^(-1/5)
+
+# Utilizando a regra de Silvermann para cálculo da largura de banda
+l_banda_p = h_silverman / 2
+l_banda_m = h_silverman
+l_banda_g = h_silverman * 2
+
+graph1 <- penguins |> ggplot(aes(x = flipper_length_mm)) + geom_density(bw = l_banda_p, color = "green") + labs(title = "Estimativa de densidade de Comprimento de Nadadeira (mm)", subtitle = "Largura de banda pequena" , x = "flipper_length_mm", y = "Densidade")
+graph2 <- penguins |> ggplot(aes(x = flipper_length_mm)) + geom_density(bw = l_banda_m, color = "red") + labs(title = "Estimativa de densidade de Comprimento de Nadadeira (mm)", subtitle = "Largura de banda média" ,  x = "flipper_length_mm", y = "Densidade")
+graph3 <- penguins |> ggplot(aes(x = flipper_length_mm)) + geom_density(bw = l_banda_g, color = "blue") + labs(title = "Estimativa de densidade de Comprimento de Nadadeira (mm)", subtitle = "Largura de banda grande" , x = "flipper_length_mm", y = "Densidade")
+
+print(graph1)
+print(graph2)
+print(graph3)
+
+```
+
+[Comentário:]{.underline}
+
+Para cálculo do parâmetro de largura de banda pequeno, médio e grande, foi utilizada a regra de Silvermann (Silvermann, 2018), que se traduz na seguinte fórmula:
+
+$$
+h = 0.9 \cdot \min\left(\sigma, \frac{IQR}{1.34}\right) \cdot n^{-1/5}
+$$
+
+onde:
+
+-   $(\sigma)$ é o desvio padrão dos dados.
+
+-   $(IQR)$ é o intervalo interquartil.
+
+-   $(n)$ é o número de observações.
+
+Para a escolha do parâmetro de largura de banda, a partir do valor h calculado, foram considerados os seguintes valores
+
+-   largura de banda pequeno: h / 2
+
+-   largura de banda médio: h
+
+-   largura de banda grande: 2 \* h
+
+Quando a largura de banda (*h*) é pequena, a estimativa de densidade exibe a variação associada às observações individuais, em vez da estrutura subjacente de toda a amostra. Quando a largura de banda (*h*) é grande, esta estrutura é suplantada pela suavização dos dados em uma região muito grande.
+
+## c. Faça um gráfico com as três estimativas da densidade de "flipper_length_mm" para as três espécies de pinguim diferentes (não em três painéis).
+
+```{r}
+penguins |> ggplot(aes(x = flipper_length_mm, color = species, fill=species)) +
+  geom_density(linewidth = 0.65, alpha = 0.2) + labs(title = "Densidade do Comprimento da Nadadeira (mm) por Espécie de pinguim", x = "Comprimento de nadadeira (mm)", y = "Densidade")
+```
+
+[Comentário:]{.underline}
+
+Os comprimentos de nadadeira da espécie Adelie, Chinstrap e Gentoo se concentram, respectivamente, nos valores 190, 195 e 215mm.
+
+A distribuição dos comprimentos de nadadeira de Adelie e Chinstrap se sobrepõem mais do que aquela da espécie Gentoo, indicando que aquelas espécies possuem comprimentos de nadadeiras semelhantes para as duas espécies.
+
+Ainda, há uma sobreposição considerável das distribuições dos pinguins da espécie Adelie com a espécie Chinstrap entre os valores de nadadeira de 175 a 200mm. A falta de sobreposição considerável deles com a espécie Gentoo significa que esta espécie possui valores de comprimento de nadadeira significativamente maiores.
+
+## d. Adicione estimativas de erro no melhor gráfico de item "b".
+
+```{r}
+# Calcular a densidade usando o método kernel e a largura de banda média
+dens <- density(penguins$flipper_length_mm, bw = l_banda_m)
+
+# Estimar o intervalo de confiança usando bootstrap
+set.seed(222)
+boot_dens <- replicate(50, {
+  dados_amostra <- sample(penguins$flipper_length_mm, replace = TRUE)
+  density(dados_amostra, bw = dens$bw)$y
+})
+
+# Calcular o intervalo de confiança de 95%
+ci_lower <- apply(boot_dens, 1, quantile, probs = 0.025)
+ci_upper <- apply(boot_dens, 1, quantile, probs = 0.975)
+
+# Criar um data frame para ggplot2
+dens_df <- data.frame(x = dens$x, y = dens$y, ci_lower = ci_lower, ci_upper = ci_upper)
+
+# Criar o gráfico de densidade com faixa de erro
+ggplot(dens_df, aes(x = x, y = y)) +
+  geom_line(color = "green") +
+  geom_ribbon(aes(ymin = ci_lower, ymax = ci_upper), alpha = 0.2, fill = "green") +
+  labs(title = "Densidade de Comprimento da Nadadeira",
+      subtitle = "Estimativa de erro usando Bootstrap (IC = 95%)",
+       x = "Comprimento da Nadadeira (mm)",
+       y = "Densidade") +
+  theme_minimal()
+
+```
+
+[Comentário:]{.underline}
+
+O melhor gráfico do item 'b' foi o calculado a partir da fórmula de Silvermann, com largura de banda média.
+
+Foi utilizado o bootstrap (amostra aleatória com reposição) no qual foram retiradas 50 amostras, calculada a estimativa de densidade a partir desses dados e gerado um gráfico com os valores dentro do intervalo de confiança de 95%.
+
+## e. (opcional) Faça bootstraps dos penguins (escolher amostras do mesmo tamanho do banco original com reposição - 100 amostras) e colocar a densidade usado no item "d" sem transparência (alpha = 1 no ggplot) e as outras 100 estimativas da densidade (das amostras bootstrap) com uma transparência maior (alpha menor que 1, experimenta).
+
+```{r}
+# Calcular a densidade usando o método kernel e a largura de banda média
+dens <- density(penguins$flipper_length_mm, bw = l_banda_m)
+
+# Estimar o intervalo de confiança usando bootstrap
+set.seed(222)
+boot_dens <- replicate(100, {
+  sample_data <- sample(penguins$flipper_length_mm, replace = TRUE)
+  density(sample_data, bw = dens$bw)$y
+})
+
+# Calcular o intervalo de confiança de 95%
+ci_lower <- apply(boot_dens, 1, quantile, probs = 0.025)
+ci_upper <- apply(boot_dens, 1, quantile, probs = 0.975)
+
+# Criar um data frame para ggplot2
+dens_df <- data.frame(x = dens$x, y = dens$y, ci_lower = ci_lower, ci_upper = ci_upper)
+
+# Criar o gráfico de densidade com faixa de erro
+ggplot(dens_df, aes(x = x, y = y)) +
+  geom_line(color = "black", alpha = 1) +
+  geom_ribbon(aes(ymin = ci_lower, ymax = ci_upper), alpha = 0.15, fill = "black") +
+  labs(title = "Densidade de Comprimento da Nadadeira",
+      subtitle = "Estimativa de erro usando Bootstrap (IC = 95%)",
+       x = "Comprimento da Nadadeira (mm)",
+       y = "Densidade") +
+  theme_minimal()
+
+```
+
+## 2) Densidades bivariadas.
+
+## a. Faça um gráfico de dispersão de "flipper_length_mm" e "body_mass_g".
+
+```{r}
+
+# 2a
+# Gráfico de dispersão de flipper_length_mm e body_mass_g
+penguins |> ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point(alpha = 0.6) +
+  labs(title = "Gráfico de Dispersão",
+       subtitle = "Comprimento de Nadadeira (mm) x Massa Corporal (g)",
+       x = "Flipper Length (mm)",
+       y = "Body Mass (g)") +
+  theme_minimal()
+
+```
+
+[Comentário:]{.underline}
+
+Há uma correlação positiva entre o tamanho da nadadeira (flipper_length_mm) e a massa corporal dos pinguins, sendo bem claro no gráfico a similaridade do tamanho da nadadeira e da massa corporal das espécies "Adelie" e "Chinstrap" do que elas com a espécie "Gentoo".
+
+Ainda, as observações das espécies "Adelie" e "Chainstrap" se assemelham em relação ao comprimento de nadadeira e da massa corporal do que aqueles da espécie "Gentoo".
+
+## b. Calcule a densidade bivariada de "flipper_length_mm" e "body_mass_g" e faça pelo menos um gráfico de nível (contour plot) e um gráfico 3d da densidade estimada.
+
+```{r}
+# Calcular a densidade bivariada usando kde2d do pacote MASS
+densidade_bivariada <- kde2d(penguins$flipper_length_mm, penguins$body_mass_g, n = 100)
+
+# Transformar a densidade bivariada em um data frame para ggplot2
+densidade_df <- data.frame(
+  x = rep(densidade_bivariada$x, each = length(densidade_bivariada$y)),
+  y = rep(densidade_bivariada$y, length(densidade_bivariada$x)),
+  z = as.vector(densidade_bivariada$z)
+)
+
+# Criar o gráfico de nível (contour plot)
+fig <- ggplot(densidade_df, aes(x = x, y = y, z = z)) +
+  geom_contour(bins = 10) + 
+  labs(title = "Densidade Bivariada de Comprimento da Nadadeira e Massa Corporal",
+       x = "Comprimento da Nadadeira (mm)",
+       y = "Massa Corporal (g)") +
+  theme_minimal()
+fig
+```
+
+```{r}
+# Criar o gráfico 3D da densidade estimada
+fig <- plot_ly(
+  x = ~densidade_bivariada$x,
+  y = ~densidade_bivariada$y,
+  z = ~densidade_bivariada$z,
+  type = "surface"
+)
+
+fig <- fig %>% layout(
+  title = "Densidade Bivariada 3D de Comprimento da Nadadeira e Massa Corporal",
+  scene = list(
+    xaxis = list(title = "Comprimento da Nadadeira (mm)"),
+    yaxis = list(title = "Massa Corporal (g)"),
+    zaxis = list(title = "Densidade")
+  )
+)
+
+fig
+```
+
+[Comentário]{.underline}:
+
+O contour plot (gráfico de contorno) permite visualizar informações tridimensionais em um plano bidimensional. Quanto mais próximas as linhas de contorno, maior a quantidade de observações.
+
+Há uma sobreposição significativa entre as distribuições presentes na base de dados das espécies Adelie e Chainstrap, especialmente em comprimentos de nadadeira entre 180 e 200 mm e massas corporais entre 3000 e 4500 g, em relação ao que existe da espécie Gentoo.
+
+Em razão dos outliers, os maiores valores para Comprimento de Nadadeira da espécie Gentoo não apresentam contornos suaves.
+
+No gráfico 3D de densidade estimada, o pico em amarelo indica uma região de alta densidade, na qual há mais pinguins com combinações específicas de comprimento da nadadeira e massa corporal do que em outras regiões.
+
+Em razão do aspecto mais pontudo e menos uniforme, indica, como já foi ressaltado, uma concentração de observações em torno de um valor central.
+
+## c. (opcional) Como têm poucos dados esse pode não dar certo. Tenta fazer a estimativa da densidade bivariada para cada espécie de pinguim e colocar as três densidades no mesmo gráfico de nível (contour plot).
+
+```{r}
+# Calcular a densidade bivariada para cada espécie usando kde2d do pacote MASS
+dens_adelie <- kde2d(penguins$flipper_length_mm[penguins$species == "Adelie"],
+                     penguins$body_mass_g[penguins$species == "Adelie"], n = 100)
+
+dens_chinstrap <- kde2d(penguins$flipper_length_mm[penguins$species == "Chinstrap"],
+                        penguins$body_mass_g[penguins$species == "Chinstrap"], n = 100)
+
+dens_gentoo <- kde2d(penguins$flipper_length_mm[penguins$species == "Gentoo"],
+                     penguins$body_mass_g[penguins$species == "Gentoo"], n = 100)
+
+# Transformar as densidades bivariadas em data frames para ggplot2
+dens_adelie_df <- data.frame(
+  x = rep(dens_adelie$x, each = length(dens_adelie$y)),
+  y = rep(dens_adelie$y, length(dens_adelie$x)),
+  z = as.vector(dens_adelie$z),
+  species = "Adelie"
+)
+
+dens_chinstrap_df <- data.frame(
+  x = rep(dens_chinstrap$x, each = length(dens_chinstrap$y)),
+  y = rep(dens_chinstrap$y, length(dens_chinstrap$x)),
+  z = as.vector(dens_chinstrap$z),
+  species = "Chinstrap"
+)
+
+dens_gentoo_df <- data.frame(
+  x = rep(dens_gentoo$x, each = length(dens_gentoo$y)),
+  y = rep(dens_gentoo$y, length(dens_gentoo$x)),
+  z = as.vector(dens_gentoo$z),
+  species = "Gentoo"
+)
+
+# Combinar os data frames
+dens_all_df <- rbind(dens_adelie_df, dens_chinstrap_df, dens_gentoo_df)
+
+# Criar o gráfico de nível (contour plot) com cores diferentes e sem preenchimento
+ggplot(dens_all_df, aes(x = x, y = y, z = z, color = species)) +
+  geom_contour() +
+  labs(title = "Densidade Bivariada de Comprimento da Nadadeira e Massa Corporal por Espécie",
+       x = "Comprimento da Nadadeira (mm)",
+       y = "Massa Corporal (g)") +
+  theme_minimal() +
+  scale_color_manual(values = c("Adelie" = "red", "Chinstrap" = "green", "Gentoo" = "blue"))
+
+```
+
+[Comentário:]{.underline}
+
+As linhas de contorno vermelhas, referentes a espécie Adelle, mostram que a maioria desses pinguins tem um comprimento de nadadeira entre aproximadamente 175 e 200 mm e uma massa corporal entre aproximadamente 3000 e 4500 g. As linhas de contorno verdes, referentes à espécie Chinstrap, mostram que a maioria deles possui comprimento de nadadeira entre aproximadamente 180 e 205 mm e uma massa corporal entre aproximadamente 3000 e 4500 g, com sobreposição entre essas duas espécies.
+
+Por fim, as linhas de contorno em azul, correspondentes à espécie Gentoo, tem um comprimento de nadadeira entre aproximadamente 200 e 230 mm e uma massa corporal entre aproximadamente 4000 e 6000 g. A distribuição dos Gentoos é distinta das outras duas espécies, com comprimentos de nadadeira e massas corporais geralmente maiores.
+
+Pela suavidade das linhas de contorno do gráfico apresentado, as observações das espécies Adelie e Gentoo são mais suaves (as distribuições das informações de Comprimento de Nadadeira e Massa Corporal são mais uniformes e contínuas) do que aquelas das espécie Gentoo, o que se traduz, nesta última, em maior variabilidade dos dados.
+
+## 3) Extração de Características.
+
+## a. Execute PCA nas variáveis quantitativas e verificar em gráficos de dispersão como somente o primeiro, os dois primeiros e os três primeiros componentes principais separam (ou não) as espécies de pinguim.
+
+### Interpretação dos Resultados
+
+Os gráficos de dispersão mostram como os componentes principais separam as espécies de pinguins. Cada ponto representa um pinguim, e as cores indicam as diferentes espécies. Os elipses representam intervalos de confiança ao redor dos centróides das espécies.
+
+1.  **Primeiro Componente Principal**: Verifica se o primeiro componente principal é suficiente para separar as espécies.
+
+2.  **Dois Primeiros Componentes Principais**: Verifica a separação das espécies nos dois primeiros componentes principais.
+
+3.  **Três Primeiros Componentes Principais**: Verifica a separação das espécies nos três primeiros componentes principais.
+
+Ao analisar os gráficos, podemos observar a eficácia da PCA na separação das espécies de pinguins com base nos componentes principais.
+
+```{r}
+
+# Selecionar variáveis quantitativas
+penguins_quant <- penguins_filtered %>%
+  select(bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g)
+
+# Executar PCA
+pca_result <- PCA(penguins_quant, scale.unit = TRUE, graph = FALSE)
+
+# Gráficos de dispersão dos componentes principais
+# Primeiro componente principal
+fviz_pca_ind(pca_result,
+             axes = c(1, 1),
+             geom.ind = "point",
+             habillage = penguins_filtered$species,
+             addEllipses = TRUE,
+             title = "Primeiro Componente Principal") +
+  labs(color = "Espécie")
+
+# Dois primeiros componentes principais
+fviz_pca_ind(pca_result,
+             axes = c(1, 2),
+             geom.ind = "point",
+             habillage = penguins_filtered$species,
+             addEllipses = TRUE,
+             title = "Dois Primeiros Componentes Principais") +
+  labs(color = "Espécie")
+
+# Três primeiros componentes principais
+fviz_pca_ind(pca_result,
+             axes = c(1, 3),
+             geom.ind = "point",
+             habillage = penguins_filtered$species,
+             addEllipses = TRUE,
+             title = "Três Primeiros Componentes Principais") +
+  labs(color = "Espécie")
+
+```
+
+## 4) Regressão não-paramétrica.
+
+## a. Faça uma regressão não-paramétrica de "body_mass_g" como função de "flipper_length_mm" (pode ser LOESS) e faça um gráfico com os dados e a linha (curva) de regressão com estimativas do erro. \[Dica: olha R for Data Science\]
+
+```{r}
+# 4a
+# Criar gráfico com regressão LOESS
+ggplot(data = penguins_filtered, aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(color = "blue", alpha = 0.6) +
+  geom_smooth(method = "loess", color = "red", fill = "lightgray", se = TRUE) +
+  labs(title = "Regressão Não-Paramétrica LOESS de body_mass_g como função de flipper_length_mm",
+       x = "Flipper Length (mm)",
+       y = "Body Mass (g)") +
+  theme_minimal()
+```
+
+[Comentário:]{.underline}
+
+### *Interpretação dos Resultados*
+
+A regressão não-paramétrica, diferentemente da regressão tradicional, não assume uma forma uma forma# funcional específica para a relação das variáveis, mas estima o relacionamento com base nos próprios dados. permitindo maior flexibilidade do modelo.
+
+1.  *Curva de suavavização de LOESS*: Representada pela linha vermelha do gráfico, calculada localmente para os diferentes segmentos de dados. Apresenta uma relação não perfeitamente linear.
+
+2.  *Intervalo de confiança*: Representada pela área sombreada ao redor da curva de LOESS, apresenta a incerteza da estimativa da regressão. Indica uma estivativa confiável por apresentar uma faixa relativamente estreita.
+
+3.  *Tendências observadas*:
+
+    a\. Relação positiva entre o comprimento da nadadeira e a massa corporal;
+
+    b\. Comportamentos distintos para 3 faixas:
+
+    -   entre 170mm e 200mm, relação menos acentuada;
+    -   entre 200mm e 220mm; relação mais forte entre as variáveis nesse interevalo e
+    -   acima de 220, relação se torna menos acentuada.
+
+## b. Teste se a média é constante (pode usar um teste de permutação).
+
+```{r}
+# 4b
+# Definir uma função para calcular o R^2 da regressão linear
+calc_r_squared <- function(data) {
+  model <- lm(body_mass_g ~ flipper_length_mm, data = data)
+  summary(model)$r.squared
+}
+
+# Calcular o R^2 observado
+observed_r_squared <- calc_r_squared(penguins_filtered)
+
+# Realizar permutações
+set.seed(123)  # Para reprodutibilidade
+n_permutations <- 1000
+permuted_r_squared <- numeric(n_permutations)
+
+for (i in 1:n_permutations) {
+  permuted_data <- penguins_filtered %>%
+    mutate(flipper_length_mm = sample(flipper_length_mm))
+  permuted_r_squared[i] <- calc_r_squared(permuted_data)
+}
+
+# Calcular o p-valor
+p_value <- mean(permuted_r_squared >= observed_r_squared)
+
+# Exibir resultados
+observed_r_squared
+p_value
+```
+
+## Comentários
+
+### *Interpretação dos Resultados*
+
+Pelo teste de permutação foi possível observar que aproximadamente 76% da variação da massa corportal dos pinguins está relacionada à variação no comprimento da nadadeira. O valor p_value = 0, indica que em todas as 1000 permutações realizadas, nenhum R2 permutados foi igual ou maior que o R2 observado.
+
+## c. (opcional) Teste se a relação é não linear. (Uma possibilidade não discutida na aula seria fazer uma regressão linear, pegar os resíduos e embaralhar os resíduos - uns 100 vezes, criando 100 amostras diferentes - soma os resíduos aos valores preditos do modelo linear para cada observação. Depois faça uma regressão não paramétrica e calcular a estatística F com o modelo linear como a hipótese nula. Calcule o quantil da estatística F da amostra original na distribuição dos Fs criada das 100 amostras, esse é “um menos o p-valor".
+
+```{r}
+# Fazer a regressão linear
+linear_model <- lm(body_mass_g ~ flipper_length_mm, data = penguins_filtered)
+
+# Obter os resíduos e valores preditos
+residuals <- resid(linear_model)
+predicted_values <- predict(linear_model)
+
+# Número de permutações
+n_permutations <- 100
+
+# Função para calcular a estatística F da regressão não paramétrica
+calc_f_statistic <- function(x, y) {
+  model <- loess(y ~ x)
+  y_hat <- predict(model)
+  ss_total <- sum((y - mean(y))^2)
+  ss_res <- sum((y - y_hat)^2)
+  f_stat <- ((ss_total - ss_res) / (length(x) - 1)) / (ss_res / (length(x) - 2))
+  return(f_stat)
+}
+
+# Calcular a estatística F observada
+f_observed <- calc_f_statistic(penguins_filtered$flipper_length_mm, penguins_filtered$body_mass_g)
+
+# Criar distribuição nula
+f_statistics <- numeric(n_permutations)
+
+set.seed(42)  # Para reprodutibilidade
+
+for (i in 1[n_permutations]) {
+  permuted_residuals <- sample(residuals)
+  permuted_y <- predicted_values + permuted_residuals
+  f_statistics[i] <- calc_f_statistic(penguins_filtered$flipper_length_mm, permuted_y)
+}
+
+# Calcular o p-valor
+p_value <- mean(f_statistics >= f_observed)
+
+# Mostrar resultados
+f_observed
+p_value
+1 - p_value
+```
+
+## Comentários
+
+### Para testar se a relação entre "flipper_length_mm" e "body_mass_g" é não linear, podemos seguir a abordagem sugerida:
+
+1.  Fazer uma regressão linear e obter os resíduos.
+
+2.  Embaralhar os resíduos e criar 100 amostras diferentes.
+
+3.  Somar os resíduos embaralhados aos valores preditos do modelo linear para cada observação.
+
+4.  Fazer uma regressão não paramétrica (LOESS) em cada uma dessas 100 amostras.
+
+5.  Calcular a estatística F para cada uma dessas regressões não paramétricas.
+
+6.  Comparar a estatística F da amostra original com a distribuição das estatísticas F das 100 amostras permutadas.
+
+### **Interpretação dos Resultados**
+
+-   **`f_observed`**: Estatística F observada da regressão não paramétrica na amostra original.
+
+-   **`p_value`**: P-valor do teste de permutação.
+
+-   **`1 - p_value`**: Esse valor indica "um menos o p-valor", que é a probabilidade de a relação ser não linear.
+
+Se **`1 - p_value`** for pequeno (por exemplo, menor que 0,05), podemos rejeitar a hipótese nula de que a relação é linear, sugerindo que a relação é não linear.
+
+### Citações
+
+Sturges HA. The choice of a class interval. Journal of the American Statistical Association 1926, 21:65–66.
+
+SILVERMAN, Bernard W. **Density estimation for statistics and data analysis**. Routledge, 2018.
