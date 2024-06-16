@@ -13,3 +13,6 @@
 
 # Ignorar arquivos começados com ponto dentro de um diretório específico
 config/.*
+
+# Ignorar todos os arquivos dentro de um diretório
+Lista02_MonteCarlo_files/*.*

@@ -1,0 +1,72 @@
+---
+title: "Lista02"
+author: "Andreia, Fernando e Roberto"
+format: html
+editor: visual
+---
+
+## Running Code
+
+1)  Geração de Números Aleatórios
+
+```{=html}
+<!-- -->
+```
+a.  O método Inverse Transform - Exercício 3.3 do livro da Rizzo.	
+
+*3.2 The Pareto(a, b) distribution has cdf*
+
+$$F(x) = 1 - (\frac{b}{x})^a, x\geq b\geq 0, a\geq 0$$
+
+*Derive the probability inverse transformation* $F^{-1}(U)$ *and use the inverse transform method to simulate a random sample from the Pareto(2, 2) distribution. Graph the density histogram of the sample with the Pareto(2, 2) density superimposed for comparison.*
+
+[Resposta]{.underline}
+
+Para cálculo da transformação inversa, temos que:
+
+$$
+u = F(x) = 1 - (\frac{b}{x})^a \Rightarrow 1-u = (\frac{b}{x})^a \Rightarrow {(1-u)}^\frac{1}{a} = \frac{b}{x} \Rightarrow x = \frac{b}{{(1-u)}^\frac{1}{a}} \Rightarrow F^{-1}_x(u) = {b} * {{(1-u)}^\frac{-1}{a}}
+$$
+
+Como explicado no Exemplo 3.3 (p.51), $U$ e $1-U$ possuem a mesma distribuição $Uniform(0,1)$, logo é mais simples utilizar ${b} * {{(u)}^\frac{-1}{a}}$.
+
+Por se tratar de função de distribuição acumulada, é necessária derivá-la para encontrar a função densidade de probabilidade, logo:
+
+$$F(x) = 1 - (\frac{b}{x})^a, x\geq b\geq 0, a\geq 0$$
+
+$$
+f(x) = F'(x) = 0 - (a)*(b^a*(-1)*x^{-a-1}) \Rightarrow a*b^a*x^{-({a+1})}, x \geq b
+$$
+
+```{r}
+set.seed(1)
+a <- 2
+b <- 2
+n <- 2000
+u <- runif(n)
+x <- b * (u)^(-1/a)
+print(summary(x))
+
+hist(x, breaks = 100, prob = TRUE, col = 'lightgreen'
+     , main = "Histograma de Amostra Simulada com Dens. Teórica Pareto(2, 2)"
+     , xlab = 'x', ylab = 'Densidade')
+y <- sort(x)
+fy <- a * b^a * y^(- (a + 1))
+lines (y, fy, col = 'red', lwd = 1)
+
+```
+
+a.  asdasdasd				
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
