@@ -1,0 +1,15 @@
+# Ignorar todos os arquivos ocultos
+.*
+
+# Exceto o próprio arquivo .gitignore
+!.gitignore
+
+# Ignorar arquivos específicos
+.env
+.dockerignore
+
+# Ignorar todos os arquivos .log em qualquer lugar do repositório
+*.log
+
+# Ignorar arquivos começados com ponto dentro de um diretório específico
+config/.*
