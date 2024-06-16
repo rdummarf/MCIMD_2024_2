@@ -15,4 +15,4 @@
 config/.*
 
 # Ignorar todos os arquivos dentro de um diretório
-Lista02_MonteCarlo_files/*.*
+./Lista02_MonteCarlo_files/*.*
