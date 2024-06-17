@@ -40,6 +40,7 @@ $$
 
 ```{r}
 set.seed(1)
+# Valores iniciais dados pelo problema
 a <- 2
 b <- 2
 n <- 2000
@@ -56,7 +57,38 @@ lines (y, fy, col = 'red', lwd = 1)
 
 ```
 
-a.  asdasdasd				
+b\. O método Acceptance-Rejection - Exercício 3.7 do livro da Rizzo. (Exemplo 3.7 faz isso para Beta(2,2). Para simplificar vocês podem resolver a questão somente para α e β maiores que 1.)
+
+*3.7 Write a function to generate a random sample of size n from the Beta(a, b) distribution by the acceptance-rejection method. Generate a random sample of size 1000 from the Beta(3,2) distribution. Graph the histogram of the sample with the theoretical Beta(3,2) density superimposed.*
+
+```{r}
+function_Beta <- function(n, a, b) 
+{ 
+  n <- 1000
+  k <- 0
+  y <- numeric(n) 
+  count <- 0
+  while (k < n) 
+  {
+    u <- runif(1)
+    x <- runif(1)
+    if (x^(a - 1) * (1 - x)^(b - 1) > u) 
+    {
+      k <- k + 1
+      y[k] <- x
+    }
+    count <- count + 1
+  }
+  print(paste("Quantidade de iterações: ", count))
+  return(y)
+}
+
+y <- function_Beta(2000, a = 3, b = 2)
+hist(y, breaks = 50, prob = TRUE, ylim = c(0, 2.5), col='lightgreen')
+z <- seq (0, 1, .01)
+f.z <- 12 * z^2 * (1-z)
+lines (z, f.z, col = 'red', lwd=2)
+```
 
 ```{r}
 1 + 1
