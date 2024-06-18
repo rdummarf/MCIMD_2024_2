@@ -5,14 +5,11 @@ format: html
 editor: visual
 ---
 
-## Running Code
+## 1)  Geração de Números Aleatórios
 
-1)  Geração de Números Aleatórios
-
-```{=html}
 <!-- -->
-```
-a.  O método Inverse Transform - Exercício 3.3 do livro da Rizzo.	
+
+### a.  O método Inverse Transform - Exercício 3.3 do livro da Rizzo.
 
 *3.2 The Pareto(a, b) distribution has cdf*
 
@@ -20,7 +17,7 @@ $$F(x) = 1 - (\frac{b}{x})^a, x\geq b\geq 0, a\geq 0$$
 
 *Derive the probability inverse transformation* $F^{-1}(U)$ *and use the inverse transform method to simulate a random sample from the Pareto(2, 2) distribution. Graph the density histogram of the sample with the Pareto(2, 2) density superimposed for comparison.*
 
-[Resposta]{.underline}
+### [Resposta]{.underline}
 
 Para cálculo da transformação inversa, temos que:
 
@@ -57,14 +54,45 @@ lines (y, fy, col = 'red', lwd = 1)
 
 ```
 
-b\. O método Acceptance-Rejection - Exercício 3.7 do livro da Rizzo. (Exemplo 3.7 faz isso para Beta(2,2). Para simplificar vocês podem resolver a questão somente para α e β maiores que 1.)
+### b\. O método Acceptance-Rejection - Exercício 3.7 do livro da Rizzo. (Exemplo 3.7 faz isso para Beta(2,2). Para simplificar vocês podem resolver a questão somente para α e β maiores que 1.)
 
 *3.7 Write a function to generate a random sample of size n from the Beta(a, b) distribution by the acceptance-rejection method. Generate a random sample of size 1000 from the Beta(3,2) distribution. Graph the histogram of the sample with the theoretical Beta(3,2) density superimposed.*
+
+### [Resposta]{.underline}
+
+Vamos calcular a função densidade de probabilidade (PDF) para a distribuição Beta com parâmetros $\alpha = 3$ e $\beta = 2.$
+
+#### Definição Geral da PDF da Distribuição Beta
+
+A função densidade de probabilidade (PDF) da distribuição Beta é dada por: $$f(x; \alpha, \beta) = \frac{x^{\alpha - 1} (1 - x)^{\beta - 1}}{B(\alpha, \beta)}$$
+
+onde $B(\alpha, \beta)$ é a função beta: $B(\alpha, \beta) = \frac{\Gamma(\alpha) \Gamma(\beta)}{\Gamma(\alpha + \beta)}$.
+
+Para $\alpha = 3$ e $\beta = 2$ , a PDF se torna: $$ f(x; 3, 2) = \frac{x^{3 - 1} (1 - x)^{2 - 1}}{B(3, 2)} = \frac{x^2 (1 - x)}{B(3, 2)} $$
+
+#### Cálculo da Função Beta (B(3, 2))}
+
+A função beta para $\alpha = 3$ e $\beta = 2$ é: $B(3, 2) = \frac{\Gamma(3) \Gamma(2)}{\Gamma(3 + 2)}$
+
+
+Usando as propriedades da função gama:
+$\Gamma(n) = (n - 1)!$, então,
+$\Gamma(3) = 2! = 2$
+$\Gamma(2) = 1! = 1$
+$\Gamma(5) = 4! = 24$
+
+Portanto,
+$B(3, 2) = \frac{2! \cdot 1!}{4!} = \frac{2 \cdot 1}{24} = \frac{2}{24} = \frac{1}{12}$
+
+Substituindo $B(3, 2) = \frac{1}{12}$ na expressão da PDF:
+$$
+f(x; 3, 2) = \frac{x^2 (1 - x)}{\frac{1}{12}} = x^2 (1 - x) \cdot 12 = 12x^2 (1 - x)
+$$
 
 ```{r}
 function_Beta <- function(n, a, b) 
 { 
-  n <- 1000
+  n <- 4000
   k <- 0
   y <- numeric(n) 
   count <- 0
@@ -89,16 +117,3 @@ z <- seq (0, 1, .01)
 f.z <- 12 * z^2 * (1-z)
 lines (z, f.z, col = 'red', lwd=2)
 ```
-
-```{r}
-1 + 1
-```
-
-You can add options to executable code like this
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).

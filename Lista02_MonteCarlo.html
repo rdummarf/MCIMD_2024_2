@@ -132,19 +132,17 @@ window.Quarto = {
 </header>
 
 
-<section id="running-code" class="level2">
-<h2 class="anchored" data-anchor-id="running-code">Running Code</h2>
-<ol type="1">
-<li>Geração de Números Aleatórios</li>
-</ol>
+<section id="geração-de-números-aleatórios" class="level2">
+<h2 class="anchored" data-anchor-id="geração-de-números-aleatórios">1) Geração de Números Aleatórios</h2>
 <!-- -->
-<ol type="a">
-<li>O método Inverse Transform - Exercício 3.3 do livro da Rizzo.</li>
-</ol>
+<section id="a.-o-método-inverse-transform---exercício-3.3-do-livro-da-rizzo." class="level3">
+<h3 class="anchored" data-anchor-id="a.-o-método-inverse-transform---exercício-3.3-do-livro-da-rizzo.">a. O método Inverse Transform - Exercício 3.3 do livro da Rizzo.</h3>
 <p><em>3.2 The Pareto(a, b) distribution has cdf</em></p>
 <p><span class="math display">\[F(x) = 1 - (\frac{b}{x})^a, x\geq b\geq 0, a\geq 0\]</span></p>
 <p><em>Derive the probability inverse transformation</em> <span class="math inline">\(F^{-1}(U)\)</span> <em>and use the inverse transform method to simulate a random sample from the Pareto(2, 2) distribution. Graph the density histogram of the sample with the Pareto(2, 2) density superimposed for comparison.</em></p>
-<p><u>Resposta</u></p>
+</section>
+<section id="resposta" class="level3">
+<h3 class="anchored" data-anchor-id="resposta"><u>Resposta</u></h3>
 <p>Para cálculo da transformação inversa, temos que:</p>
 <p><span class="math display">\[
 u = F(x) = 1 - (\frac{b}{x})^a \Rightarrow 1-u = (\frac{b}{x})^a \Rightarrow {(1-u)}^\frac{1}{a} = \frac{b}{x} \Rightarrow x = \frac{b}{{(1-u)}^\frac{1}{a}} \Rightarrow F^{-1}_x(u) = {b} * {{(1-u)}^\frac{-1}{a}}
@@ -184,6 +182,18 @@ f(x) = F'(x) = 0 - (a)*(b^a*(-1)*x^{-a-1}) \Rightarrow a*b^a*x^{-({a+1})}, x \ge
 </div>
 <p>b. O método Acceptance-Rejection - Exercício 3.7 do livro da Rizzo. (Exemplo 3.7 faz isso para Beta(2,2). Para simplificar vocês podem resolver a questão somente para α e β maiores que 1.)</p>
 <p><em>3.7 Write a function to generate a random sample of size n from the Beta(a, b) distribution by the acceptance-rejection method. Generate a random sample of size 1000 from the Beta(3,2) distribution. Graph the histogram of the sample with the theoretical Beta(3,2) density superimposed.</em></p>
+<p>Vamos calcular a função densidade de probabilidade (PDF) para a distribuição Beta com parâmetros <span class="math inline">\(\alpha = 3\)</span> e <span class="math inline">\(\beta = 2.\)</span></p>
+<section id="definição-geral-da-pdf-da-distribuição-beta" class="level4">
+<h4 class="anchored" data-anchor-id="definição-geral-da-pdf-da-distribuição-beta">Definição Geral da PDF da Distribuição Beta</h4>
+<p>A função densidade de probabilidade (PDF) da distribuição Beta é dada por: <span class="math display">\[f(x; \alpha, \beta) = \frac{x^{\alpha - 1} (1 - x)^{\beta - 1}}{B(\alpha, \beta)}\]</span></p>
+<p>onde <span class="math inline">\(B(\alpha, \beta)\)</span> é a função beta: <span class="math inline">\(B(\alpha, \beta) = \frac{\Gamma(\alpha) \Gamma(\beta)}{\Gamma(\alpha + \beta)}\)</span>.</p>
+<p>Para <span class="math inline">\(\alpha = 3\)</span> e <span class="math inline">\(\beta = 2\)</span> , a PDF se torna: <span class="math display">\[ f(x; 3, 2) = \frac{x^{3 - 1} (1 - x)^{2 - 1}}{B(3, 2)} = \frac{x^2 (1 - x)}{B(3, 2)} \]</span></p>
+</section>
+<section id="cálculo-da-função-beta-b3-2" class="level4">
+<h4 class="anchored" data-anchor-id="cálculo-da-função-beta-b3-2">Cálculo da Função Beta (B(3, 2))}</h4>
+<p>A função beta para <span class="math inline">\(\alpha = 3\)</span> e <span class="math inline">\(\beta = 2\)</span> é: <span class="math inline">\(B(3, 2) = \frac{\Gamma(3) \Gamma(2)}{\Gamma(3 + 2)}\)</span></p>
+<p>Usando as propriedades da função gama: <span class="math inline">\(\Gamma(n) = (n - 1)!\)</span>, então, <span class="math inline">\(\Gamma(3) = 2! = 2\)</span> <span class="math inline">\(\Gamma(2) = 1! = 1\)</span> <span class="math inline">\(\Gamma(5) = 4! = 24\)</span></p>
+<p>Portanto, <span class="math inline">\(B(3, 2) = \frac{2! \cdot 1!}{4!} = \frac{2 \cdot 1}{24} = \frac{2}{24} = \frac{1}{12}\)</span></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>function_Beta <span class="ot">&lt;-</span> <span class="cf">function</span>(n, a, b) </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>{ </span>
@@ -235,6 +245,8 @@ f(x) = F'(x) = 0 - (a)*(b^a*(-1)*x^{-a-1}) \Rightarrow a*b^a*x^{-({a+1})}, x \ge
 </div>
 </div>
 <p>The <code>echo: false</code> option disables the printing of code (only output is displayed).</p>
+</section>
+</section>
 </section>
 
 </main>
