@@ -180,8 +180,13 @@ f(x) = F'(x) = 0 - (a)*(b^a*(-1)*x^{-a-1}) \Rightarrow a*b^a*x^{-({a+1})}, x \ge
 </div>
 </div>
 </div>
-<p>b. O método Acceptance-Rejection - Exercício 3.7 do livro da Rizzo. (Exemplo 3.7 faz isso para Beta(2,2). Para simplificar vocês podem resolver a questão somente para α e β maiores que 1.)</p>
+</section>
+<section id="b.-o-método-acceptance-rejection---exercício-3.7-do-livro-da-rizzo.-exemplo-3.7-faz-isso-para-beta22.-para-simplificar-vocês-podem-resolver-a-questão-somente-para-α-e-β-maiores-que-1." class="level3">
+<h3 class="anchored" data-anchor-id="b.-o-método-acceptance-rejection---exercício-3.7-do-livro-da-rizzo.-exemplo-3.7-faz-isso-para-beta22.-para-simplificar-vocês-podem-resolver-a-questão-somente-para-α-e-β-maiores-que-1.">b. O método Acceptance-Rejection - Exercício 3.7 do livro da Rizzo. (Exemplo 3.7 faz isso para Beta(2,2). Para simplificar vocês podem resolver a questão somente para α e β maiores que 1.)</h3>
 <p><em>3.7 Write a function to generate a random sample of size n from the Beta(a, b) distribution by the acceptance-rejection method. Generate a random sample of size 1000 from the Beta(3,2) distribution. Graph the histogram of the sample with the theoretical Beta(3,2) density superimposed.</em></p>
+</section>
+<section id="resposta-1" class="level3">
+<h3 class="anchored" data-anchor-id="resposta-1"><u>Resposta</u></h3>
 <p>Vamos calcular a função densidade de probabilidade (PDF) para a distribuição Beta com parâmetros <span class="math inline">\(\alpha = 3\)</span> e <span class="math inline">\(\beta = 2.\)</span></p>
 <section id="definição-geral-da-pdf-da-distribuição-beta" class="level4">
 <h4 class="anchored" data-anchor-id="definição-geral-da-pdf-da-distribuição-beta">Definição Geral da PDF da Distribuição Beta</h4>
@@ -190,33 +195,36 @@ f(x) = F'(x) = 0 - (a)*(b^a*(-1)*x^{-a-1}) \Rightarrow a*b^a*x^{-({a+1})}, x \ge
 <p>Para <span class="math inline">\(\alpha = 3\)</span> e <span class="math inline">\(\beta = 2\)</span> , a PDF se torna: <span class="math display">\[ f(x; 3, 2) = \frac{x^{3 - 1} (1 - x)^{2 - 1}}{B(3, 2)} = \frac{x^2 (1 - x)}{B(3, 2)} \]</span></p>
 </section>
 <section id="cálculo-da-função-beta-b3-2" class="level4">
-<h4 class="anchored" data-anchor-id="cálculo-da-função-beta-b3-2">Cálculo da Função Beta (B(3, 2))}</h4>
+<h4 class="anchored" data-anchor-id="cálculo-da-função-beta-b3-2">Cálculo da Função Beta B(3, 2)</h4>
 <p>A função beta para <span class="math inline">\(\alpha = 3\)</span> e <span class="math inline">\(\beta = 2\)</span> é: <span class="math inline">\(B(3, 2) = \frac{\Gamma(3) \Gamma(2)}{\Gamma(3 + 2)}\)</span></p>
-<p>Usando as propriedades da função gama: <span class="math inline">\(\Gamma(n) = (n - 1)!\)</span>, então, <span class="math inline">\(\Gamma(3) = 2! = 2\)</span> <span class="math inline">\(\Gamma(2) = 1! = 1\)</span> <span class="math inline">\(\Gamma(5) = 4! = 24\)</span></p>
+<p>Usando as propriedades da função gama: <span class="math inline">\(\Gamma(n) = (n - 1)!\)</span>, então, <span class="math inline">\(\Gamma(3) = 2! = 2\)</span>, <span class="math inline">\(\Gamma(2) = 1! = 1\)</span>, <span class="math inline">\(\Gamma(5) = 4! = 24\)</span></p>
 <p>Portanto, <span class="math inline">\(B(3, 2) = \frac{2! \cdot 1!}{4!} = \frac{2 \cdot 1}{24} = \frac{2}{24} = \frac{1}{12}\)</span></p>
+<p>Substituindo <span class="math inline">\(B(3, 2) = \frac{1}{12}\)</span> na expressão da PDF: <span class="math display">\[
+f(x; 3, 2) = \frac{x^2 (1 - x)}{\frac{1}{12}} = x^2 (1 - x) \cdot 12 = 12x^2 (1 - x)
+\]</span></p>
+<p>No exercício, para os valores de <span class="math inline">\(\alpha = 3\)</span> e <span class="math inline">\(\beta = 2\)</span>, temos uma distribuição unimodal com um pico, assimétrica e levemente incilinada para a direita.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>function_Beta <span class="ot">&lt;-</span> <span class="cf">function</span>(n, a, b) </span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>{ </span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  k <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n) </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  count <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (k <span class="sc">&lt;</span> n) </span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  {</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    u <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (x<span class="sc">^</span>(a <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> x)<span class="sc">^</span>(b <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">&gt;</span> u) </span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    {</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      k <span class="ot">&lt;-</span> k <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>      y[k] <span class="ot">&lt;-</span> x</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    count <span class="ot">&lt;-</span> count <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Quantidade de iterações: "</span>, count))</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">function_Beta</span>(<span class="dv">2000</span>, <span class="at">a =</span> <span class="dv">3</span>, <span class="at">b =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  k <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n) </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  count <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span> (k <span class="sc">&lt;</span> n) </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    u <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">1</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (x<span class="sc">^</span>(a <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> x)<span class="sc">^</span>(b <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">&gt;</span> u) </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>      k <span class="ot">&lt;-</span> k <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>      y[k] <span class="ot">&lt;-</span> x</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    count <span class="ot">&lt;-</span> count <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Quantidade de iterações: "</span>, count))</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(y)</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">function_Beta</span>(<span class="dv">1000</span>, <span class="at">a =</span> <span class="dv">3</span>, <span class="at">b =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Quantidade de iterações:  11880"</code></pre>
 </div>
@@ -232,20 +240,70 @@ f(x) = F'(x) = 0 - (a)*(b^a*(-1)*x^{-a-1}) \Rightarrow a*b^a*x^{-({a+1})}, x \ge
 </div>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
-</div>
-</div>
-<p>You can add options to executable code like this</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 4</code></pre>
-</div>
-</div>
-<p>The <code>echo: false</code> option disables the printing of code (only output is displayed).</p>
 </section>
+</section>
+</section>
+<section id="integração-por-monte-carlo" class="level2">
+<h2 class="anchored" data-anchor-id="integração-por-monte-carlo">2) Integração por Monte Carlo</h2>
+<!-- -->
+<section id="a.-exercício-5.3-do-livro-da-rizzo.-opcional-gera-da-exponencial-truncada-ao-intervalo-005-e-compara-a-variância." class="level3">
+<h3 class="anchored" data-anchor-id="a.-exercício-5.3-do-livro-da-rizzo.-opcional-gera-da-exponencial-truncada-ao-intervalo-005-e-compara-a-variância.">a. Exercício 5.3 do livro da Rizzo. (Opcional: gera da exponencial truncada ao intervalo [0;0,5] e compara a variância.)</h3>
+<p><em>Compute a Monte Carlo estimate</em> <span class="math inline">\(\hat{\theta}\)</span> of <span class="math display">\[
+\theta = \int_0^{0.5} e^{-x} \, dx
+\]</span><em>by sampling from Uniform(0, 0.5), and estimate the variance of</em> <span class="math inline">\(\hat{\theta}\)</span><em>. Find another Monte Carlo estimator</em> <span class="math inline">\(\hat{\theta}^*\)</span> <em>by sampling from the exponential distribution. Which of the variances (of</em> <span class="math inline">\(\hat{\theta}\)</span> <em>and</em> <span class="math inline">\(\hat{\theta}^*\)</span><em>) is smaller, and why?</em></p>
+</section>
+<section id="resposta-2" class="level3">
+<h3 class="anchored" data-anchor-id="resposta-2"><u>Resposta</u></h3>
+</section>
+<section id="b.-variáveis-antitéticos-exercício-5.10-do-livro-da-rizzo.-opcional-trocar-esse-exercício-para-5.9-mas-saiba-que-a-função-não-é-monotônica-pode-quebrar-em-pedaços-monotônicos-e-o-limite-superior-é-infinito-precisa-fazer-alguma-transformação-de-variáveis-x--1x-funcionaria" class="level3">
+<h3 class="anchored" data-anchor-id="b.-variáveis-antitéticos-exercício-5.10-do-livro-da-rizzo.-opcional-trocar-esse-exercício-para-5.9-mas-saiba-que-a-função-não-é-monotônica-pode-quebrar-em-pedaços-monotônicos-e-o-limite-superior-é-infinito-precisa-fazer-alguma-transformação-de-variáveis-x--1x-funcionaria">b. Variáveis Antitéticos: Exercício 5.10 do livro da Rizzo. (Opcional: Trocar esse exercício para 5.9, mas saiba que a função não é monotônica [pode quebrar em pedaços monotônicos] e o limite superior é infinito [precisa fazer alguma transformação de variáveis x-&gt; 1/x funcionaria])</h3>
+<p><em>Use Monte Carlo integration with antithetic variables to estimate</em></p>
+<p><span class="math display">\[ \int_{0}^{1} \frac{e^{-x}}{1 + x^2} \, dx
+\]</span></p>
+<p><em>and find the approximate reduction in variance as a percentage of the variance without variance reduction.</em></p>
+</section>
+<section id="resposta-3" class="level3">
+<h3 class="anchored" data-anchor-id="resposta-3"><u>Resposta</u></h3>
+</section>
+<section id="c.-importance-sampling---exercício-5.14-do-livro-da-rizzo." class="level3">
+<h3 class="anchored" data-anchor-id="c.-importance-sampling---exercício-5.14-do-livro-da-rizzo.">c.&nbsp;Importance Sampling - Exercício 5.14 do livro da Rizzo.</h3>
+<p><em>Obtain a Monte Carlo estimate of</em> <span class="math display">\[\int_{1}^{\infty} \frac{x^2}{\sqrt{2\pi}} e^{-x^2/2} \, dx
+\]</span> <em>by importance sampling.</em></p>
+</section>
+<section id="resposta-4" class="level3">
+<h3 class="anchored" data-anchor-id="resposta-4"><u>Resposta</u></h3>
+</section>
+<section id="d.-stratified-importance-sampling---exercício-5.15-do-livro-da-rizzo.-não-esquece-de-usar-os-quantís-da-função-importância-para-definir-os-intervalos." class="level3">
+<h3 class="anchored" data-anchor-id="d.-stratified-importance-sampling---exercício-5.15-do-livro-da-rizzo.-não-esquece-de-usar-os-quantís-da-função-importância-para-definir-os-intervalos.">d.&nbsp;Stratified Importance Sampling - Exercício 5.15 do livro da Rizzo. (Não esquece de usar os quantís da função importância para definir os intervalos.)</h3>
+<p><em>Obtain the stratified importance sampling estimate in Example 5.13 and com- pare it with the result of Example 5.10.</em></p>
+</section>
+<section id="resposta-5" class="level3">
+<h3 class="anchored" data-anchor-id="resposta-5"><u>Resposta</u></h3>
+</section>
+</section>
+<section id="inferência-com-monte-carlo" class="level2">
+<h2 class="anchored" data-anchor-id="inferência-com-monte-carlo">3) Inferência com Monte Carlo</h2>
+<section id="a.-mse-eqm-exercício-6.1-do-livro-da-rizzo.-aproveite-os-códigos-para-a-normal-com-contaminação" class="level3">
+<h3 class="anchored" data-anchor-id="a.-mse-eqm-exercício-6.1-do-livro-da-rizzo.-aproveite-os-códigos-para-a-normal-com-contaminação">a. MSE (EQM): Exercício 6.1 do livro da Rizzo. (aproveite os códigos para a Normal com contaminação)</h3>
+<p><em>Estimate the MSE of the level <span class="math inline">\(k\)</span> trimmed means for random samples of size 20 generated from a standard Cauchy distribution. (The target parameter <span class="math inline">\(\theta\)</span> is the center or median; the expected value does not exist.) Summarize the estimates of MSE in a table for <span class="math inline">\(k = 1,2,...,9\)</span>.</em></p>
+</section>
+<section id="resposta-6" class="level3">
+<h3 class="anchored" data-anchor-id="resposta-6"><u>Resposta</u></h3>
+</section>
+<section id="b.-poder-de-testes-exercício-6.3-do-livro-da-rizzo.-aproveite-os-códigos-do-exemplo-6.9" class="level3">
+<h3 class="anchored" data-anchor-id="b.-poder-de-testes-exercício-6.3-do-livro-da-rizzo.-aproveite-os-códigos-do-exemplo-6.9">b. Poder de testes: Exercício 6.3 do livro da Rizzo. (aproveite os códigos do Exemplo 6.9)</h3>
+<p><em>Plot the power curves for the t-test in Example 6.9 for sample sizes 10, 20, 30, 40, and 50, but omit the standard error bars. Plot the curves on the same graph, each in a different color or different line type, and include a legend. Comment on the relation between power and sample size.</em></p>
+</section>
+<section id="resposta-7" class="level3">
+<h3 class="anchored" data-anchor-id="resposta-7"><u>Resposta</u></h3>
+</section>
+<section id="c.-níveis-de-confiança-exercício-6.4-ou-6.5-do-livro-da-rizzo" class="level3">
+<h3 class="anchored" data-anchor-id="c.-níveis-de-confiança-exercício-6.4-ou-6.5-do-livro-da-rizzo">c.&nbsp;Níveis de confiança: Exercício 6.4 ou 6.5 do livro da Rizzo</h3>
+<p><em>6.4 Suppose that <span class="math inline">\(X_1, . . . , X_n\)</span> are a random sample from a from a lognormal dis- tribution with unknown parameters. Construct a 95% confidence interval for the parameter <span class="math inline">\(\mu\)</span>. Use a Monte Carlo method to obtain an empirical estimate of the confidence level.</em></p>
+<p><em>6.5 Suppose a 95% symmetric <span class="math inline">\(t\)</span>-interval is applied to estimate a mean, but the sample data are non-normal. Then the probability that the confidence interval covers the mean is not necessarily equal to 0.95. Use a Monte Carlo experiment to estimate the coverage probability of the <span class="math inline">\(t\)</span>-interval for random samples of $X^2(2) data with sample size <span class="math inline">\(n\)</span> = 20. Compare your <span class="math inline">\(t\)</span>-interval results with the simulation results in Example 6.4. (The <span class="math inline">\(t\)</span>-interval should be more robust to departures from normality than the interval for variance.)</em></p>
+</section>
+<section id="resposta-8" class="level3">
+<h3 class="anchored" data-anchor-id="resposta-8"><u>Resposta</u></h3>
 </section>
 </section>
 
