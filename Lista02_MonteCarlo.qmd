@@ -92,7 +92,6 @@ $$
 ```{r}
 function_Beta <- function(n, a, b) 
 { 
-  n <- 4000
   k <- 0
   y <- numeric(n) 
   count <- 0
@@ -111,7 +110,7 @@ function_Beta <- function(n, a, b)
   return(y)
 }
 
-y <- function_Beta(2000, a = 3, b = 2)
+y <- function_Beta(1000, a = 3, b = 2)
 hist(y, breaks = 50, prob = TRUE, ylim = c(0, 2.5), col='lightgreen')
 z <- seq (0, 1, .01)
 f.z <- 12 * z^2 * (1-z)
