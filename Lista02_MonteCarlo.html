@@ -254,6 +254,11 @@ f(x; 3, 2) = \frac{x^2 (1 - x)}{\frac{1}{12}} = x^2 (1 - x) \cdot 12 = 12x^2 (1 
 </section>
 <section id="resposta-2" class="level3">
 <h3 class="anchored" data-anchor-id="resposta-2"><u>Resposta</u></h3>
+<p>O valor exato da integral é dado por:</p>
+<p><span class="math display">\[ \theta = -e^{-0.5} -(-e^{0}) = 1 - e^{-0.5} = 1 - 0.606531 = 0.393469  \]</span></p>
+<p>O estimador de Monte Carlo é dado pela expressão:</p>
+<p><span class="math display">\[ \hat{\theta} = (b - a) \int{a}\^{b} g(x) , dx = \frac{1}{2} \left{ \frac{1}{m} \sum{i=1}\^{m} e\^{-u} \right}\\]</span></p>
+<p>sendo que <span class="math inline">\(u\)</span> é gerado a partir de uma distribuição <span class="math inline">\(Uniform(0, 0.5)\)</span>.</p>
 </section>
 <section id="b.-variáveis-antitéticos-exercício-5.10-do-livro-da-rizzo.-opcional-trocar-esse-exercício-para-5.9-mas-saiba-que-a-função-não-é-monotônica-pode-quebrar-em-pedaços-monotônicos-e-o-limite-superior-é-infinito-precisa-fazer-alguma-transformação-de-variáveis-x--1x-funcionaria" class="level3">
 <h3 class="anchored" data-anchor-id="b.-variáveis-antitéticos-exercício-5.10-do-livro-da-rizzo.-opcional-trocar-esse-exercício-para-5.9-mas-saiba-que-a-função-não-é-monotônica-pode-quebrar-em-pedaços-monotônicos-e-o-limite-superior-é-infinito-precisa-fazer-alguma-transformação-de-variáveis-x--1x-funcionaria">b. Variáveis Antitéticos: Exercício 5.10 do livro da Rizzo. (Opcional: Trocar esse exercício para 5.9, mas saiba que a função não é monotônica [pode quebrar em pedaços monotônicos] e o limite superior é infinito [precisa fazer alguma transformação de variáveis x-&gt; 1/x funcionaria])</h3>
@@ -285,7 +290,7 @@ f(x; 3, 2) = \frac{x^2 (1 - x)}{\frac{1}{12}} = x^2 (1 - x) \cdot 12 = 12x^2 (1 
 <h2 class="anchored" data-anchor-id="inferência-com-monte-carlo">3) Inferência com Monte Carlo</h2>
 <section id="a.-mse-eqm-exercício-6.1-do-livro-da-rizzo.-aproveite-os-códigos-para-a-normal-com-contaminação" class="level3">
 <h3 class="anchored" data-anchor-id="a.-mse-eqm-exercício-6.1-do-livro-da-rizzo.-aproveite-os-códigos-para-a-normal-com-contaminação">a. MSE (EQM): Exercício 6.1 do livro da Rizzo. (aproveite os códigos para a Normal com contaminação)</h3>
-<p><em>Estimate the MSE of the level <span class="math inline">\(k\)</span> trimmed means for random samples of size 20 generated from a standard Cauchy distribution. (The target parameter <span class="math inline">\(\theta\)</span> is the center or median; the expected value does not exist.) Summarize the estimates of MSE in a table for <span class="math inline">\(k = 1,2,...,9\)</span>.</em></p>
+<p><em>Estimate the MSE of the level</em> <span class="math inline">\(k\)</span> trimmed means for random samples of size 20 generated from a standard Cauchy distribution. (The target parameter <span class="math inline">\(\theta\)</span> is the center or median; the expected value does not exist.) Summarize the estimates of MSE in a table for <span class="math inline">\(k = 1,2,...,9\)</span>.</p>
 </section>
 <section id="resposta-6" class="level3">
 <h3 class="anchored" data-anchor-id="resposta-6"><u>Resposta</u></h3>
@@ -299,8 +304,8 @@ f(x; 3, 2) = \frac{x^2 (1 - x)}{\frac{1}{12}} = x^2 (1 - x) \cdot 12 = 12x^2 (1 
 </section>
 <section id="c.-níveis-de-confiança-exercício-6.4-ou-6.5-do-livro-da-rizzo" class="level3">
 <h3 class="anchored" data-anchor-id="c.-níveis-de-confiança-exercício-6.4-ou-6.5-do-livro-da-rizzo">c.&nbsp;Níveis de confiança: Exercício 6.4 ou 6.5 do livro da Rizzo</h3>
-<p><em>6.4 Suppose that <span class="math inline">\(X_1, . . . , X_n\)</span> are a random sample from a from a lognormal dis- tribution with unknown parameters. Construct a 95% confidence interval for the parameter <span class="math inline">\(\mu\)</span>. Use a Monte Carlo method to obtain an empirical estimate of the confidence level.</em></p>
-<p><em>6.5 Suppose a 95% symmetric <span class="math inline">\(t\)</span>-interval is applied to estimate a mean, but the sample data are non-normal. Then the probability that the confidence interval covers the mean is not necessarily equal to 0.95. Use a Monte Carlo experiment to estimate the coverage probability of the <span class="math inline">\(t\)</span>-interval for random samples of $X^2(2) data with sample size <span class="math inline">\(n\)</span> = 20. Compare your <span class="math inline">\(t\)</span>-interval results with the simulation results in Example 6.4. (The <span class="math inline">\(t\)</span>-interval should be more robust to departures from normality than the interval for variance.)</em></p>
+<p><em>6.4 Suppose that</em> <span class="math inline">\(X_1, . . . , X_n\)</span> are a random sample from a from a lognormal dis- tribution with unknown parameters. Construct a 95% confidence interval for the parameter <span class="math inline">\(\mu\)</span>. Use a Monte Carlo method to obtain an empirical estimate of the confidence level.</p>
+<p><em>6.5 Suppose a 95% symmetric</em> <span class="math inline">\(t\)</span>-interval is applied to estimate a mean, but the sample data are non-normal. Then the probability that the confidence interval covers the mean is not necessarily equal to 0.95. Use a Monte Carlo experiment to estimate the coverage probability of the <span class="math inline">\(t\)</span>-interval for random samples of $X^2(2) data with sample size <span class="math inline">\(n\)</span> = 20. Compare your <span class="math inline">\(t\)</span>-interval results with the simulation results in Example 6.4. (The <span class="math inline">\(t\)</span>-interval should be more robust to departures from normality than the interval for variance.)</p>
 </section>
 <section id="resposta-8" class="level3">
 <h3 class="anchored" data-anchor-id="resposta-8"><u>Resposta</u></h3>
