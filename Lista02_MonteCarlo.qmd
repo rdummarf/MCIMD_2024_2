@@ -9,7 +9,7 @@ editor: visual
 
 <!-- -->
 
-### a. O método Inverse Transform - Exercício 3.3 do livro da Rizzo.
+##### a. O método Inverse Transform - Exercício 3.3 do livro da Rizzo.
 
 *3.2 The Pareto(a, b) distribution has cdf*
 
@@ -17,7 +17,7 @@ $$F(x) = 1 - (\frac{b}{x})^a, x\geq b\geq 0, a\geq 0$$
 
 *Derive the probability inverse transformation* $F^{-1}(U)$ *and use the inverse transform method to simulate a random sample from the Pareto(2, 2) distribution. Graph the density histogram of the sample with the Pareto(2, 2) density superimposed for comparison.*
 
-### [Resposta]{.underline}
+##### [Resposta]{.underline}
 
 Para cálculo da transformação inversa, temos que:
 
@@ -54,11 +54,11 @@ lines (y, fy, col = 'red', lwd = 1)
 
 ```
 
-### b. O método Acceptance-Rejection - Exercício 3.7 do livro da Rizzo. (Exemplo 3.7 faz isso para Beta(2,2). Para simplificar vocês podem resolver a questão somente para α e β maiores que 1.)
+##### b. O método Acceptance-Rejection - Exercício 3.7 do livro da Rizzo. (Exemplo 3.7 faz isso para Beta(2,2). Para simplificar vocês podem resolver a questão somente para α e β maiores que 1.)
 
 *3.7 Write a function to generate a random sample of size n from the Beta(a, b) distribution by the acceptance-rejection method. Generate a random sample of size 1000 from the Beta(3,2) distribution. Graph the histogram of the sample with the theoretical Beta(3,2) density superimposed.*
 
-### [Resposta]{.underline}
+##### [Resposta]{.underline}
 
 Vamos calcular a função densidade de probabilidade (PDF) para a distribuição Beta com parâmetros $\alpha = 3$ e $\beta = 2.$
 
@@ -70,7 +70,7 @@ onde $B(\alpha, \beta)$ é a função beta: $B(\alpha, \beta) = \frac{\Gamma(\al
 
 Para $\alpha = 3$ e $\beta = 2$ , a PDF se torna: $$ f(x; 3, 2) = \frac{x^{3 - 1} (1 - x)^{2 - 1}}{B(3, 2)} = \frac{x^2 (1 - x)}{B(3, 2)} $$
 
-#### Cálculo da Função Beta B(3, 2)
+###### Cálculo da Função Beta B(3, 2)
 
 A função beta para $\alpha = 3$ e $\beta = 2$ é: $B(3, 2) = \frac{\Gamma(3) \Gamma(2)}{\Gamma(3 + 2)}$
 
@@ -116,13 +116,13 @@ lines (z, f.z, col = 'red', lwd=2)
 
 <!-- -->
 
-### a. Exercício 5.3 do livro da Rizzo. (Opcional: gera da exponencial truncada ao intervalo \[0;0,5\] e compara a variância.)
+##### a. Exercício 5.3 do livro da Rizzo. (Opcional: gera da exponencial truncada ao intervalo \[0;0,5\] e compara a variância.)
 
 *Compute a Monte Carlo estimate* $\hat{\theta}$ of $$
 \theta = \int_0^{0.5} e^{-x} \, dx
 $$*by sampling from Uniform(0, 0.5), and estimate the variance of* $\hat{\theta}$*. Find another Monte Carlo estimator* $\hat{\theta}^*$ *by sampling from the exponential distribution. Which of the variances (of* $\hat{\theta}$ *and* $\hat{\theta}^*$*) is smaller, and why?*
 
-### [Resposta]{.underline}
+##### [Resposta]{.underline}
 
 O valor exato da integral é dado por:
 
@@ -141,7 +141,11 @@ u <- runif(n, 0, 0.5)
 theta <- 0.5 * mean(exp(-u))
 theta
 ```
-````{r}
+
+```{r}
+# Para cada 5.000 amostras da distribuiçào uniforme no intervalo [0, 0.5], vamos 
+# calcular o estimador de Monte Carlo usando a função 0.5 * exp(-u), fazendo isso
+# 10.000 vezes
 estimator <- replicate(10000, expr = {
   u <- runif(n, 0, 0.5)
   theta <- 0.5 * mean(exp(-u))
@@ -149,8 +153,9 @@ estimator <- replicate(10000, expr = {
 })
 print(mean(estimator))
 c(var(estimator), sd(estimator))
-````
-Para estimarmos a variância de $\hat{\theta}^*$$, vamos utilizar a seguinte expressão:
+```
+
+Para estimarmos a variância de $\hat{\theta}^*$, vamos utilizar a seguinte expressão:
 
 $$\hat{\theta}^* = \frac{1}{m} \sum_{i=1}^{m} I(v < 0.5)$$, sendo $v$ gerado a partir de uma distribuição $Exponential(1)$.
 
@@ -160,31 +165,24 @@ v <- rexp(n, 1)
 theta <- mean(v <= 0.5)
 theta
 ```
+
 ```{r}
 estimator_1 <- replicate(10000, expr = {
   v <- rexp(n, 1)
   theta <- mean(v <= 0.5)
   theta
 })
-print(mean(estimator_1))
+print(paste("Média do estimador", mean(estimator_1)))
 print(c(var(estimator_1), sd(estimator_1)))
 
 print(var(estimator)/var(estimator_1))
 ```
 
-
-A variância do estimador $\hat{\theta}$  (baseado na amostragem uniforme) será geralmente maior do que a variância do estimador $\hat{\theta}^*$  (baseado na amostragem exponencial) porque a transformação usada na amostragem exponencial pode reduzir a variabilidade dos valores amostrados, uma vez que é melhor ajustada à forma da função de densidade $e^{-x}$.
+A variância do estimador $\hat{\theta}$ (baseado na amostragem uniforme) será geralmente maior do que a variância do estimador $\hat{\theta}^*$ (baseado na amostragem exponencial) porque a transformação usada na amostragem exponencial pode reduzir a variabilidade dos valores amostrados, uma vez que é melhor ajustada à forma da função de densidade $e^{-x}$.
 
 Assim, o estimador $\hat{\theta}^*$ terá uma variância menor devido à melhor adequação da amostragem à distribuição exponencial.
 
-
-
-
-
-
-
-
-### b. Variáveis Antitéticos: Exercício 5.10 do livro da Rizzo. (Opcional: Trocar esse exercício para 5.9, mas saiba que a função não é monotônica \[pode quebrar em pedaços monotônicos\] e o limite superior é infinito \[precisa fazer alguma transformação de variáveis x-\> 1/x funcionaria\])
+##### b. Variáveis Antitéticos: Exercício 5.10 do livro da Rizzo. (Opcional: Trocar esse exercício para 5.9, mas saiba que a função não é monotônica \[pode quebrar em pedaços monotônicos\] e o limite superior é infinito \[precisa fazer alguma transformação de variáveis x-\> 1/x funcionaria\])
 
 *Use Monte Carlo integration with antithetic variables to estimate*
 
@@ -193,39 +191,95 @@ $$
 
 *and find the approximate reduction in variance as a percentage of the variance without variance reduction.*
 
-### [Resposta]{.underline}
+##### [Resposta]{.underline}
 
-### c. Importance Sampling - Exercício 5.14 do livro da Rizzo.
+```{r}
+m <- 20000 
+monte_carlo <- replicate (2000, expr = 
+                   { 
+                     u <- runif (m) 
+                     mean (exp(-u)/(1 + u^2)) 
+                    }
+                 )
+
+anti_ethic <- replicate (2000, expr = 
+                           { u <- runif (m/2) 
+                           x1 <- exp(-u)/(1 + u^2) 
+                           x2 <- exp(-(1 -u))/(1 + ((1 -u)^2)) 
+                           mean (c (x1, x2)) 
+                           }
+                         )
+
+print(c(mean(monte_carlo), var(monte_carlo)))
+print(c(mean(anti_ethic), var(anti_ethic)))
+
+approx_reduction = 100 * (var (monte_carlo) - var (anti_ethic)) / var (monte_carlo)
+print(paste(round(approx_reduction,4), "%"))
+
+```
+
+##### c. Importance Sampling - Exercício 5.14 do livro da Rizzo.
 
 *Obtain a Monte Carlo estimate of* $$\int_{1}^{\infty} \frac{x^2}{\sqrt{2\pi}} e^{-x^2/2} \, dx
  $$ *by importance sampling.*
 
-### [Resposta]{.underline}
+##### [Resposta]{.underline}
 
-### d. Stratified Importance Sampling - Exercício 5.15 do livro da Rizzo. (Não esquece de usar os quantís da função importância para definir os intervalos.)
+
+```{r}
+n <- 20000
+imp_sampl_1 <- replicate(2000, expr = 
+                   {
+                     x <- sqrt(rchisq(n, 1)) + 1
+                     f <- 2 * dnorm(x, 1)
+                     g <- x^2 * exp(-x^2/2)/sqrt(2 * pi)
+                     mean (g/f)
+                   }
+)
+ 
+imp_sampl_2 <- replicate(2000, expr = 
+                   {
+                     x <- rgamma(n, 3/2, 2) + 1
+                     f <- dgamma(x - 1, 3/2, 2)
+                     g <- x^2 * exp(-x^2/2)/sqrt(2 * pi)
+                     mean (g/f)
+                   }
+)
+
+print(c(mean(imp_sampl_1), mean(imp_sampl_2)))
+print(c(var(imp_sampl_1), var(imp_sampl_2)))
+print(var(imp_sampl_1)/var(imp_sampl_2))
+
+```
+No caso em tela, a 1a. função produz um estimador mais eficiente do que a 2a. função, uma vez que a variância do estimador da 1a. função é menor do que a variância do estimador da 2a. função.
+
+
+
+
+##### d. Stratified Importance Sampling - Exercício 5.15 do livro da Rizzo. (Não esquece de usar os quantís da função importância para definir os intervalos.)
 
 *Obtain the stratified importance sampling estimate in Example 5.13 and com- pare it with the result of Example 5.10.*
 
-### [Resposta]{.underline}
+##### [Resposta]{.underline}
 
 ## 3) Inferência com Monte Carlo
 
-### a. MSE (EQM): Exercício 6.1 do livro da Rizzo. (aproveite os códigos para a Normal com contaminação)
+##### a. MSE (EQM): Exercício 6.1 do livro da Rizzo. (aproveite os códigos para a Normal com contaminação)
 
 *Estimate the MSE of the level* $k$ trimmed means for random samples of size 20 generated from a standard Cauchy distribution. (The target parameter $\theta$ is the center or median; the expected value does not exist.) Summarize the estimates of MSE in a table for $k = 1,2,...,9$.
 
-### [Resposta]{.underline}
+##### [Resposta]{.underline}
 
-### b. Poder de testes: Exercício 6.3 do livro da Rizzo. (aproveite os códigos do Exemplo 6.9)
+##### b. Poder de testes: Exercício 6.3 do livro da Rizzo. (aproveite os códigos do Exemplo 6.9)
 
 *Plot the power curves for the t-test in Example 6.9 for sample sizes 10, 20, 30, 40, and 50, but omit the standard error bars. Plot the curves on the same graph, each in a different color or different line type, and include a legend. Comment on the relation between power and sample size.*
 
-### [Resposta]{.underline}
+##### [Resposta]{.underline}
 
-### c. Níveis de confiança: Exercício 6.4 ou 6.5 do livro da Rizzo
+##### c. Níveis de confiança: Exercício 6.4 ou 6.5 do livro da Rizzo
 
 *6.4 Suppose that* $X_1, . . . , X_n$ are a random sample from a from a lognormal dis- tribution with unknown parameters. Construct a 95% confidence interval for the parameter $\mu$. Use a Monte Carlo method to obtain an empirical estimate of the confidence level.
 
 *6.5 Suppose a 95% symmetric* $t$-interval is applied to estimate a mean, but the sample data are non-normal. Then the probability that the confidence interval covers the mean is not necessarily equal to 0.95. Use a Monte Carlo experiment to estimate the coverage probability of the $t$-interval for random samples of \$X\^2(2) data with sample size $n$ = 20. Compare your $t$-interval results with the simulation results in Example 6.4. (The $t$-interval should be more robust to departures from normality than the interval for variance.)
 
-### [Resposta]{.underline}
+##### [Resposta]{.underline}
