@@ -225,7 +225,6 @@ print(paste(round(approx_reduction,4), "%"))
 
 ##### [Resposta]{.underline}
 
-
 ```{r}
 n <- 20000
 imp_sampl_1 <- replicate(2000, expr = 
@@ -251,16 +250,52 @@ print(c(var(imp_sampl_1), var(imp_sampl_2)))
 print(var(imp_sampl_1)/var(imp_sampl_2))
 
 ```
+
 No caso em tela, a 1a. função produz um estimador mais eficiente do que a 2a. função, uma vez que a variância do estimador da 1a. função é menor do que a variância do estimador da 2a. função.
-
-
-
 
 ##### d. Stratified Importance Sampling - Exercício 5.15 do livro da Rizzo. (Não esquece de usar os quantís da função importância para definir os intervalos.)
 
-*Obtain the stratified importance sampling estimate in Example 5.13 and com- pare it with the result of Example 5.10.*
+*Obtain the stratified importance sampling estimate in Example 5.13 and compare it with the result of Example 5.10.*
 
 ##### [Resposta]{.underline}
+
+O exemplo 5.13 traz a seguinte integral:
+
+$$ \int_{0}^{1} \frac{e^{-x}}{1 + x^2} \, dx $$ com a função importância dada por:
+
+$$ f(x) =  \frac{e^{-x}}{1 - e^{-1}}, 0 \lt x \lt 1,  $$ nos cinco subintervalos: $(j/5, (j + 1)/5), j = 0, 1, . . . , 4.$.
+
+As variáveis no $j^{th}$ subintervalo são geradas a partir da densidade:
+
+$$
+\frac{5e^{-x}}{1 - e^{-1}}, \quad \frac{j-1}{5} < x < \frac{j}{5}.
+$$
+
+```{r}
+set.seed(1)
+
+M <- 10000
+k <- 5
+m <- M/k
+si <- numeric(k)
+v <- numeric(k)
+g <- function(x) exp(-x)/(1 + x^2)
+f <- function(x) ((k * exp(-x))/(1 - exp(-1)))
+
+
+for(j in 1:k) {
+  u <- runif(m, (j - 1)/k, j/k)
+  x <- -log(1 - (1 - exp(-1)) * u)
+  fg <- g(x)/f(x)
+  si[j] <- mean(fg)
+  v[j] <- var(fg)
+}
+
+print(sum(si))
+print(mean(v))
+print(sqrt(mean(v)))
+
+```
 
 ## 3) Inferência com Monte Carlo
 
@@ -270,15 +305,106 @@ No caso em tela, a 1a. função produz um estimador mais eficiente do que a 2a. 
 
 ##### [Resposta]{.underline}
 
+```{r}
+n <- 20
+K <- n/2 - 1 
+m <- 1000
+mse <- matrix(0, n/2, 2) 
+trimmed.mse <- function(n, m, k) 
+  {
+    tmean <- numeric(m)
+    for (i in 1:m) 
+    {
+      x <- sort(rcauchy(n))
+      tmean[i] <- sum(x[(k + 1):(n - k)])/(n - 2 * k)
+    }
+    mse.est <- mean(tmean^2)
+    se.mse <- sqrt(mean((tmean - mean(tmean))^2))/sqrt(m)
+    return(c(mse.est, se.mse))
+}
+
+for (k in 0:K) 
+{
+  mse[k + 1, 1:2] <- trimmed.mse(n = n, m = m, k = k)
+}
+
+mse <- as.data.frame(cbind(0:K, mse))
+names(mse) <- c("k", "t-mean", "se")
+print(mse)
+
+```
+
 ##### b. Poder de testes: Exercício 6.3 do livro da Rizzo. (aproveite os códigos do Exemplo 6.9)
 
 *Plot the power curves for the t-test in Example 6.9 for sample sizes 10, 20, 30, 40, and 50, but omit the standard error bars. Plot the curves on the same graph, each in a different color or different line type, and include a legend. Comment on the relation between power and sample size.*
 
 ##### [Resposta]{.underline}
 
+```{r}
+N <- c(10, 20, 30, 40, 50) 
+m <- 1000
+mu0 <- 500
+sigma <- 100
+mu <- c(seq(450, 650, 10))
+M <- length(mu)
+power <- matrix(0, M, 5)
+for (j in 1:5) 
+{
+  n <- N[j]
+  for (i in 1:M) 
+  {
+    mu1 <- mu[i]
+    pvalues <- replicate(m, expr = 
+    {
+      x <- rnorm(n, mean = mu1, sd = sigma)
+      ttest <- t.test(x, alternative = "greater", mu = mu0)
+      ttest$p.value
+    })
+    power[i, j] <- mean(pvalues <= 0.05)
+  }
+}
+```
+
+```{r}
+plot(mu, power[, 1], type = "l", ylim = range(power), xlab = bquote(mu), ylab = "power")
+abline(v = mu0, lty = 3)
+abline(h = 0.05, lty = 3)
+for (j in 2:5) 
+  {
+    lines(mu, power[, j], col = j)
+  }
+
+legend("bottomright", inset = 0.02, legend = N, col = 1:5, lty = 1)
+
+```
+
 ##### c. Níveis de confiança: Exercício 6.4 ou 6.5 do livro da Rizzo
 
 *6.4 Suppose that* $X_1, . . . , X_n$ are a random sample from a from a lognormal dis- tribution with unknown parameters. Construct a 95% confidence interval for the parameter $\mu$. Use a Monte Carlo method to obtain an empirical estimate of the confidence level.
+
+##### [Resposta]{.underline}
+
+```{r}
+n <- 30
+confid_interv <- replicate(10000, expr = 
+  {
+    x <- rlnorm(n)
+    y <- log(x)
+    ybar <- mean(y)
+    se <- sd(y)/sqrt(n)
+    ybar + se * qnorm(c(0.025, 0.975))
+  })
+L_confid_interv <- confid_interv[1, ]
+U_confid_interv <- confid_interv[2, ]
+
+print(sum(L_confid_interv < 0 & U_confid_interv > 0))
+print(mean(L_confid_interv < 0 & U_confid_interv > 0))
+
+  
+  
+```
+
+# **(Caso decidamos fazer a 6.5)** 
 
 *6.5 Suppose a 95% symmetric* $t$-interval is applied to estimate a mean, but the sample data are non-normal. Then the probability that the confidence interval covers the mean is not necessarily equal to 0.95. Use a Monte Carlo experiment to estimate the coverage probability of the $t$-interval for random samples of \$X\^2(2) data with sample size $n$ = 20. Compare your $t$-interval results with the simulation results in Example 6.4. (The $t$-interval should be more robust to departures from normality than the interval for variance.)
 

@@ -270,12 +270,15 @@ f(x; 3, 2) = \frac{x^2 (1 - x)}{\frac{1}{12}} = x^2 (1 - x) \cdot 12 = 12x^2 (1 
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>estimator <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">10000</span>, <span class="at">expr =</span> {</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  u <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="dv">0</span>, <span class="fl">0.5</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  theta <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">exp</span>(<span class="sc">-</span>u))</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  theta</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">mean</span>(estimator))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Para cada 5.000 amostras da distribuiçào uniforme no intervalo [0, 0.5], vamos </span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># calcular o estimador de Monte Carlo usando a função 0.5 * exp(-u), fazendo isso</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 10.000 vezes</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>estimator <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">10000</span>, <span class="at">expr =</span> {</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  u <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="dv">0</span>, <span class="fl">0.5</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  theta <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">exp</span>(<span class="sc">-</span>u))</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  theta</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">mean</span>(estimator))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.3934728</code></pre>
 </div>
@@ -301,9 +304,9 @@ f(x; 3, 2) = \frac{x^2 (1 - x)}{\frac{1}{12}} = x^2 (1 - x) \cdot 12 = 12x^2 (1 
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  theta <span class="ot">&lt;-</span> <span class="fu">mean</span>(v <span class="sc">&lt;=</span> <span class="fl">0.5</span>)</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  theta</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">mean</span>(estimator_1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">"Média do estimador"</span>, <span class="fu">mean</span>(estimator_1)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.3935079</code></pre>
+<pre><code>[1] "Média do estimador 0.3935079"</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="fu">var</span>(estimator_1), <span class="fu">sd</span>(estimator_1)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -326,6 +329,37 @@ f(x; 3, 2) = \frac{x^2 (1 - x)}{\frac{1}{12}} = x^2 (1 - x) \cdot 12 = 12x^2 (1 
 </section>
 <section id="resposta-3" class="level5">
 <h5 class="anchored" data-anchor-id="resposta-3"><u>Resposta</u></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="dv">20000</span> </span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>monte_carlo <span class="ot">&lt;-</span> <span class="fu">replicate</span> (<span class="dv">2000</span>, <span class="at">expr =</span> </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                   { </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                     u <span class="ot">&lt;-</span> <span class="fu">runif</span> (m) </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">mean</span> (<span class="fu">exp</span>(<span class="sc">-</span>u)<span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> u<span class="sc">^</span><span class="dv">2</span>)) </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                    }</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                 )</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>anti_ethic <span class="ot">&lt;-</span> <span class="fu">replicate</span> (<span class="dv">2000</span>, <span class="at">expr =</span> </span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>                           { u <span class="ot">&lt;-</span> <span class="fu">runif</span> (m<span class="sc">/</span><span class="dv">2</span>) </span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>                           x1 <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span>u)<span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> u<span class="sc">^</span><span class="dv">2</span>) </span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>                           x2 <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="sc">-</span>(<span class="dv">1</span> <span class="sc">-</span>u))<span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> ((<span class="dv">1</span> <span class="sc">-</span>u)<span class="sc">^</span><span class="dv">2</span>)) </span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">mean</span> (<span class="fu">c</span> (x1, x2)) </span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>                           }</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>                         )</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="fu">mean</span>(monte_carlo), <span class="fu">var</span>(monte_carlo)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5.248562e-01 2.980072e-06</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="fu">mean</span>(anti_ethic), <span class="fu">var</span>(anti_ethic)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5.248059e-01 1.091442e-07</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>approx_reduction <span class="ot">=</span> <span class="dv">100</span> <span class="sc">*</span> (<span class="fu">var</span> (monte_carlo) <span class="sc">-</span> <span class="fu">var</span> (anti_ethic)) <span class="sc">/</span> <span class="fu">var</span> (monte_carlo)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="fu">round</span>(approx_reduction,<span class="dv">4</span>), <span class="st">"%"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "96.3375 %"</code></pre>
+</div>
+</div>
 </section>
 <section id="c.-importance-sampling---exercício-5.14-do-livro-da-rizzo." class="level5">
 <h5 class="anchored" data-anchor-id="c.-importance-sampling---exercício-5.14-do-livro-da-rizzo.">c.&nbsp;Importance Sampling - Exercício 5.14 do livro da Rizzo.</h5>
@@ -334,13 +368,87 @@ f(x; 3, 2) = \frac{x^2 (1 - x)}{\frac{1}{12}} = x^2 (1 - x) \cdot 12 = 12x^2 (1 
 </section>
 <section id="resposta-4" class="level5">
 <h5 class="anchored" data-anchor-id="resposta-4"><u>Resposta</u></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">20000</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>imp_sampl_1 <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">2000</span>, <span class="at">expr =</span> </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                   {</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>                     x <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">rchisq</span>(n, <span class="dv">1</span>)) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>                     f <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">dnorm</span>(x, <span class="dv">1</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                     g <span class="ot">&lt;-</span> x<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span> <span class="sc">*</span> pi)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">mean</span> (g<span class="sc">/</span>f)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>                   }</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>imp_sampl_2 <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">2000</span>, <span class="at">expr =</span> </span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>                   {</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>                     x <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(n, <span class="dv">3</span><span class="sc">/</span><span class="dv">2</span>, <span class="dv">2</span>) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>                     f <span class="ot">&lt;-</span> <span class="fu">dgamma</span>(x <span class="sc">-</span> <span class="dv">1</span>, <span class="dv">3</span><span class="sc">/</span><span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>                     g <span class="ot">&lt;-</span> x<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>x<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">2</span> <span class="sc">*</span> pi)</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">mean</span> (g<span class="sc">/</span>f)</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>                   }</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="fu">mean</span>(imp_sampl_1), <span class="fu">mean</span>(imp_sampl_2)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4006164 0.4006046</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">c</span>(<span class="fu">var</span>(imp_sampl_1), <span class="fu">var</span>(imp_sampl_2)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9.876403e-08 5.512531e-07</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">var</span>(imp_sampl_1)<span class="sc">/</span><span class="fu">var</span>(imp_sampl_2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1791628</code></pre>
+</div>
+</div>
+<p>No caso em tela, a 1a. função produz um estimador mais eficiente do que a 2a. função, uma vez que a variância do estimador da 1a. função é menor do que a variância do estimador da 2a. função.</p>
 </section>
 <section id="d.-stratified-importance-sampling---exercício-5.15-do-livro-da-rizzo.-não-esquece-de-usar-os-quantís-da-função-importância-para-definir-os-intervalos." class="level5">
 <h5 class="anchored" data-anchor-id="d.-stratified-importance-sampling---exercício-5.15-do-livro-da-rizzo.-não-esquece-de-usar-os-quantís-da-função-importância-para-definir-os-intervalos.">d.&nbsp;Stratified Importance Sampling - Exercício 5.15 do livro da Rizzo. (Não esquece de usar os quantís da função importância para definir os intervalos.)</h5>
-<p><em>Obtain the stratified importance sampling estimate in Example 5.13 and com- pare it with the result of Example 5.10.</em></p>
+<p><em>Obtain the stratified importance sampling estimate in Example 5.13 and compare it with the result of Example 5.10.</em></p>
 </section>
 <section id="resposta-5" class="level5">
 <h5 class="anchored" data-anchor-id="resposta-5"><u>Resposta</u></h5>
+<p>O exemplo 5.13 traz a seguinte integral:</p>
+<p><span class="math display">\[ \int_{0}^{1} \frac{e^{-x}}{1 + x^2} \, dx \]</span> com a função importância dada por:</p>
+<p><span class="math display">\[ f(x) =  \frac{e^{-x}}{1 - e^{-1}}, 0 \lt x \lt 1,  \]</span> nos cinco subintervalos: <span class="math inline">\((j/5, (j + 1)/5), j = 0, 1, . . . , 4.\)</span>.</p>
+<p>As variáveis no <span class="math inline">\(j^{th}\)</span> subintervalo são geradas a partir da densidade:</p>
+<p><span class="math display">\[
+\frac{5e^{-x}}{1 - e^{-1}}, \quad \frac{j-1}{5} &lt; x &lt; \frac{j}{5}.
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> M<span class="sc">/</span>k</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>si <span class="ot">&lt;-</span> <span class="fu">numeric</span>(k)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">numeric</span>(k)</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">exp</span>(<span class="sc">-</span>x)<span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> x<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x) ((k <span class="sc">*</span> <span class="fu">exp</span>(<span class="sc">-</span>x))<span class="sc">/</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">1</span>)))</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>k) {</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>  u <span class="ot">&lt;-</span> <span class="fu">runif</span>(m, (j <span class="sc">-</span> <span class="dv">1</span>)<span class="sc">/</span>k, j<span class="sc">/</span>k)</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">exp</span>(<span class="sc">-</span><span class="dv">1</span>)) <span class="sc">*</span> u)</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a>  fg <span class="ot">&lt;-</span> <span class="fu">g</span>(x)<span class="sc">/</span><span class="fu">f</span>(x)</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>  si[j] <span class="ot">&lt;-</span> <span class="fu">mean</span>(fg)</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>  v[j] <span class="ot">&lt;-</span> <span class="fu">var</span>(fg)</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sum</span>(si))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5246884</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">mean</span>(v))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.76115e-05</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sqrt</span>(<span class="fu">mean</span>(v)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.004196606</code></pre>
+</div>
+</div>
 </section>
 </section>
 <section id="inferência-com-monte-carlo" class="level2">
@@ -351,6 +459,46 @@ f(x; 3, 2) = \frac{x^2 (1 - x)}{\frac{1}{12}} = x^2 (1 - x) \cdot 12 = 12x^2 (1 
 </section>
 <section id="resposta-6" class="level5">
 <h5 class="anchored" data-anchor-id="resposta-6"><u>Resposta</u></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>K <span class="ot">&lt;-</span> n<span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">1</span> </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>mse <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n<span class="sc">/</span><span class="dv">2</span>, <span class="dv">2</span>) </span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>trimmed.mse <span class="ot">&lt;-</span> <span class="cf">function</span>(n, m, k) </span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>    tmean <span class="ot">&lt;-</span> <span class="fu">numeric</span>(m)</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>m) </span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>      x <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">rcauchy</span>(n))</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>      tmean[i] <span class="ot">&lt;-</span> <span class="fu">sum</span>(x[(k <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n <span class="sc">-</span> k)])<span class="sc">/</span>(n <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> k)</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>    mse.est <span class="ot">&lt;-</span> <span class="fu">mean</span>(tmean<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a>    se.mse <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">mean</span>((tmean <span class="sc">-</span> <span class="fu">mean</span>(tmean))<span class="sc">^</span><span class="dv">2</span>))<span class="sc">/</span><span class="fu">sqrt</span>(m)</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">c</span>(mse.est, se.mse))</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (k <span class="cf">in</span> <span class="dv">0</span><span class="sc">:</span>K) </span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>  mse[k <span class="sc">+</span> <span class="dv">1</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">trimmed.mse</span>(<span class="at">n =</span> n, <span class="at">m =</span> m, <span class="at">k =</span> k)</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>mse <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">cbind</span>(<span class="dv">0</span><span class="sc">:</span>K, mse))</span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(mse) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"k"</span>, <span class="st">"t-mean"</span>, <span class="st">"se"</span>)</span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(mse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   k       t-mean         se
+1  0 1052.7355392 1.02595663
+2  1    3.7118898 0.06092438
+3  2    0.3683394 0.01915323
+4  3    0.2229162 0.01492978
+5  4    0.1777166 0.01333039
+6  5    0.1529680 0.01235978
+7  6    0.1319764 0.01148780
+8  7    0.1213672 0.01101499
+9  8    0.1284836 0.01130069
+10 9    0.1548138 0.01244074</code></pre>
+</div>
+</div>
 </section>
 <section id="b.-poder-de-testes-exercício-6.3-do-livro-da-rizzo.-aproveite-os-códigos-do-exemplo-6.9" class="level5">
 <h5 class="anchored" data-anchor-id="b.-poder-de-testes-exercício-6.3-do-livro-da-rizzo.-aproveite-os-códigos-do-exemplo-6.9">b. Poder de testes: Exercício 6.3 do livro da Rizzo. (aproveite os códigos do Exemplo 6.9)</h5>
@@ -358,14 +506,84 @@ f(x; 3, 2) = \frac{x^2 (1 - x)}{\frac{1}{12}} = x^2 (1 - x) \cdot 12 = 12x^2 (1 
 </section>
 <section id="resposta-7" class="level5">
 <h5 class="anchored" data-anchor-id="resposta-7"><u>Resposta</u></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>, <span class="dv">50</span>) </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>mu0 <span class="ot">&lt;-</span> <span class="dv">500</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">450</span>, <span class="dv">650</span>, <span class="dv">10</span>))</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">length</span>(mu)</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>power <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, M, <span class="dv">5</span>)</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>) </span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> N[j]</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>M) </span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a>    mu1 <span class="ot">&lt;-</span> mu[i]</span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a>    pvalues <span class="ot">&lt;-</span> <span class="fu">replicate</span>(m, <span class="at">expr =</span> </span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a>      x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> mu1, <span class="at">sd =</span> sigma)</span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a>      ttest <span class="ot">&lt;-</span> <span class="fu">t.test</span>(x, <span class="at">alternative =</span> <span class="st">"greater"</span>, <span class="at">mu =</span> mu0)</span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a>      ttest<span class="sc">$</span>p.value</span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a>    })</span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a>    power[i, j] <span class="ot">&lt;-</span> <span class="fu">mean</span>(pvalues <span class="sc">&lt;=</span> <span class="fl">0.05</span>)</span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mu, power[, <span class="dv">1</span>], <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">ylim =</span> <span class="fu">range</span>(power), <span class="at">xlab =</span> <span class="fu">bquote</span>(mu), <span class="at">ylab =</span> <span class="st">"power"</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> mu0, <span class="at">lty =</span> <span class="dv">3</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fl">0.05</span>, <span class="at">lty =</span> <span class="dv">3</span>)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (j <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>) </span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lines</span>(mu, power[, j], <span class="at">col =</span> j)</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"bottomright"</span>, <span class="at">inset =</span> <span class="fl">0.02</span>, <span class="at">legend =</span> N, <span class="at">col =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">lty =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Lista02_MonteCarlo_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
 </section>
 <section id="c.-níveis-de-confiança-exercício-6.4-ou-6.5-do-livro-da-rizzo" class="level5">
 <h5 class="anchored" data-anchor-id="c.-níveis-de-confiança-exercício-6.4-ou-6.5-do-livro-da-rizzo">c.&nbsp;Níveis de confiança: Exercício 6.4 ou 6.5 do livro da Rizzo</h5>
 <p><em>6.4 Suppose that</em> <span class="math inline">\(X_1, . . . , X_n\)</span> are a random sample from a from a lognormal dis- tribution with unknown parameters. Construct a 95% confidence interval for the parameter <span class="math inline">\(\mu\)</span>. Use a Monte Carlo method to obtain an empirical estimate of the confidence level.</p>
-<p><em>6.5 Suppose a 95% symmetric</em> <span class="math inline">\(t\)</span>-interval is applied to estimate a mean, but the sample data are non-normal. Then the probability that the confidence interval covers the mean is not necessarily equal to 0.95. Use a Monte Carlo experiment to estimate the coverage probability of the <span class="math inline">\(t\)</span>-interval for random samples of $X^2(2) data with sample size <span class="math inline">\(n\)</span> = 20. Compare your <span class="math inline">\(t\)</span>-interval results with the simulation results in Example 6.4. (The <span class="math inline">\(t\)</span>-interval should be more robust to departures from normality than the interval for variance.)</p>
 </section>
 <section id="resposta-8" class="level5">
 <h5 class="anchored" data-anchor-id="resposta-8"><u>Resposta</u></h5>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>confid_interv <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">10000</span>, <span class="at">expr =</span> </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">rlnorm</span>(n)</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="fu">log</span>(x)</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>    ybar <span class="ot">&lt;-</span> <span class="fu">mean</span>(y)</span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a>    se <span class="ot">&lt;-</span> <span class="fu">sd</span>(y)<span class="sc">/</span><span class="fu">sqrt</span>(n)</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>    ybar <span class="sc">+</span> se <span class="sc">*</span> <span class="fu">qnorm</span>(<span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a>L_confid_interv <span class="ot">&lt;-</span> confid_interv[<span class="dv">1</span>, ]</span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a>U_confid_interv <span class="ot">&lt;-</span> confid_interv[<span class="dv">2</span>, ]</span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sum</span>(L_confid_interv <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> U_confid_interv <span class="sc">&gt;</span> <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9419</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">mean</span>(L_confid_interv <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">&amp;</span> U_confid_interv <span class="sc">&gt;</span> <span class="dv">0</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9419</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="caso-decidamos-fazer-a-6.5" class="level1">
+<h1><strong>(Caso decidamos fazer a 6.5)</strong></h1>
+<p><em>6.5 Suppose a 95% symmetric</em> <span class="math inline">\(t\)</span>-interval is applied to estimate a mean, but the sample data are non-normal. Then the probability that the confidence interval covers the mean is not necessarily equal to 0.95. Use a Monte Carlo experiment to estimate the coverage probability of the <span class="math inline">\(t\)</span>-interval for random samples of $X^2(2) data with sample size <span class="math inline">\(n\)</span> = 20. Compare your <span class="math inline">\(t\)</span>-interval results with the simulation results in Example 6.4. (The <span class="math inline">\(t\)</span>-interval should be more robust to departures from normality than the interval for variance.)</p>
+<section id="resposta-9" class="level5">
+<h5 class="anchored" data-anchor-id="resposta-9"><u>Resposta</u></h5>
 </section>
 </section>
 
