@@ -136,23 +136,25 @@ $$
 sendo que $u$ é gerado a partir de uma distribuição $Uniform(0, 0.5)$.
 
 ```{r}
-n <- 5000
+n <- 20000
+# Geração da distribuiçào uniforme entre os intervalor 0 e 0.5
 u <- runif(n, 0, 0.5)
 theta <- 0.5 * mean(exp(-u))
 theta
 ```
 
 ```{r}
-# Para cada 5.000 amostras da distribuiçào uniforme no intervalo [0, 0.5], vamos 
+# Para cada 2.000 amostras da distribuiçào uniforme no intervalo [0, 0.5], vamos 
 # calcular o estimador de Monte Carlo usando a função 0.5 * exp(-u), fazendo isso
-# 10.000 vezes
-estimator <- replicate(10000, expr = {
+# 2.000 vezes
+estimator <- replicate(2000, expr = {
   u <- runif(n, 0, 0.5)
   theta <- 0.5 * mean(exp(-u))
   theta
 })
-print(mean(estimator))
-c(var(estimator), sd(estimator))
+print(paste("Média do estimador: ", mean(estimator)))
+print(paste("Variância do estimador: ", var(estimator)))
+print(paste("DP do estimador: ", sd(estimator)))
 ```
 
 Para estimarmos a variância de $\hat{\theta}^*$, vamos utilizar a seguinte expressão:
@@ -160,25 +162,28 @@ Para estimarmos a variância de $\hat{\theta}^*$, vamos utilizar a seguinte expr
 $$\hat{\theta}^* = \frac{1}{m} \sum_{i=1}^{m} I(v < 0.5)$$, sendo $v$ gerado a partir de uma distribuição $Exponential(1)$.
 
 ```{r}
-n <- 5000
+n <- 20000
 v <- rexp(n, 1)
 theta <- mean(v <= 0.5)
 theta
 ```
 
 ```{r}
-estimator_1 <- replicate(10000, expr = {
+estimator_1 <- replicate(2000, expr = {
   v <- rexp(n, 1)
   theta <- mean(v <= 0.5)
   theta
 })
 print(paste("Média do estimador", mean(estimator_1)))
-print(c(var(estimator_1), sd(estimator_1)))
+print(paste("Variância do estimador: ", var(estimator_1)))
+print(paste("DP do estimador: ", sd(estimator_1)))
 
-print(var(estimator)/var(estimator_1))
+print(paste("Razão entre os estimadores: ", var(estimator)/var(estimator_1)))
+
+
 ```
 
-A variância do estimador $\hat{\theta}$ (baseado na amostragem uniforme) será geralmente maior do que a variância do estimador $\hat{\theta}^*$ (baseado na amostragem exponencial) porque a transformação usada na amostragem exponencial pode reduzir a variabilidade dos valores amostrados, uma vez que é melhor ajustada à forma da função de densidade $e^{-x}$.
+A variância do estimador $\hat{\theta}$ (baseado na amostragem uniforme) é maior do que a variância do estimador $\hat{\theta}^*$ (baseado na amostragem exponencial) porque a transformação usada na amostragem exponencial pode reduzir a variabilidade dos valores amostrados, uma vez que é melhor ajustada à forma da função de densidade $e^{-x}$.
 
 Assim, o estimador $\hat{\theta}^*$ terá uma variância menor devido à melhor adequação da amostragem à distribuição exponencial.
 
