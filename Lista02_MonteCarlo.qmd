@@ -1,6 +1,17 @@
 ---
-title: "Lista02"
-author: "Andreia, Fernando e Roberto"
+title: "Lista 2 - Monte Carlo"
+author:
+  - name: Andreia Queiroz Correia Dummar (222103912)
+    id: aqcd
+    email: aqcorreia@gmail.com
+  - name: Fernando da Silva Costa (232102946)
+    id: fsc
+    email: 232102946@aluno.unb.br
+  - name: Roberto Jorge Dummar FIlho (232103587)
+    id: rjdf
+    email: 232103587@aluno.unb.br
+
+prefer-html: true
 format: html
 editor: visual
 ---
@@ -251,6 +262,13 @@ A redução da variância entre o uso de Monte Carlo padrão e o uso de Monte Ca
 
 ##### [Resposta]{.underline}
 
+Para a análise, foram utilizadas com as distribuições:
+
+1.  Distribuição $x^{2}$ com 1 grau de liberdade
+2.  Distribuição Γ (Gamma) com parâmetros $\alpha=\frac{3}{2} \quad \text{e} \quad \beta=2$
+3.  Distribuição exponencial
+4.  Distribuição Cauchy (com localização 2 e escala 1)
+
 ```{r q2c}
 set.seed(1)
 n <- 20000
@@ -297,7 +315,9 @@ print(var(imp_sampl_1)/var(imp_sampl_2))
 
 ```
 
-No caso em tela, a 1a. função produz um estimador mais eficiente do que a 2a. função, uma vez que a variância do estimador da 1a. função é menor do que a variância do estimador da 2a. função.
+No caso em tela, A média das estimativas estão próximas, pois todas estão estimando a mesma integral.
+
+A $1^{a}$ função importância produz um estimador mais eficiente, com maior precisão e menor variabilidade que as demais funções uma vez que possui a menor variância.
 
 ##### d. Stratified Importance Sampling - Exercício 5.15 do livro da Rizzo. (Não esquece de usar os quantís da função importância para definir os intervalos.)
 
@@ -362,7 +382,6 @@ g <- function(x) exp(-x)/(1 + x^2)
 f <- function(x) ((k * exp(-x))/(1 - exp(-1)))
 
 for(j in 1:k) {
-  print(paste("runif(m, (j - 1)/k, j/k)", m, (j-1)/k, j/k))
   u <- runif(m, (j - 1)/k, j/k)
   x <- -log(1 - (1 - exp(-1)) * u)
   gf <- g(x)/f(x)
