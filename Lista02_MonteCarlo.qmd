@@ -507,13 +507,21 @@ legend("bottomright", inset = 0.02, legend = N, col = 1:5, lty = 1)
 
 ```
 
-Quanto maior o tamanho da amostra, maior o poder estatístico do teste
+Quando o tamanho da amostra aumenta, a precisão das estimativas de parâmetros também aumenta. A média amostral se aproxima da verdadeira média populacional $𝜇_0$ , diminuindo a variabilidade da média amostral. Isso resulta em um maior poder estatístico, permitindo detectar diferenças menores entre a média amostral e $𝜇_0$. Portanto, quanto mais se aumentam as amostras, mais a curva do poder estatístico se aproxima de $𝜇_0$, indicando uma maior capacidade de detectar desvios da hipótese nula.
 
 ##### c. Níveis de confiança: Exercício 6.4 ou 6.5 do livro da Rizzo
 
 *6.4 Suppose that* $X_1, . . . , X_n$ are a random sample from a lognormal distribution with unknown parameters. Construct a 95% confidence interval for the parameter $\mu$. Use a Monte Carlo method to obtain an empirical estimate of the confidence level.
 
 ##### [Resposta]{.underline}
+
+Iremos gerar uma amostra de tamanho 30 a partir de uma distribuição lognormal padrão (com média logarítmica $𝜇 = 0$ e desvio padrão logarítmico $\sigma = 1$ ).
+
+O intervalo de confiança é calculado utilizando-se a fórmula:
+
+$$
+\left( \bar{y} - z_{\alpha/2} \cdot \frac{s_y}{\sqrt{n}}, \bar{y} + z_{\alpha/2} \cdot \frac{s_y}{\sqrt{n}} \right)
+$$
 
 ```{r}
 set.seed(1)
@@ -529,15 +537,9 @@ confid_interv <- replicate(20000, expr =
 L_confid_interv <- confid_interv[1, ]
 U_confid_interv <- confid_interv[2, ]
 
-print(sum(L_confid_interv < 0 & U_confid_interv > 0))
-print(mean(L_confid_interv < 0 & U_confid_interv > 0))
+print(paste("Quantidade de ICs que contém o valor da média logarítmica: ", sum(L_confid_interv < 0 & U_confid_interv > 0)))
+print(paste("Proporção de ICs que contêm o verdadeiro valor de mi: ", mean(L_confid_interv < 0 & U_confid_interv > 0)))
 
   
   
 ```
-
-# **(Caso decidamos fazer a 6.5)** 
-
-*6.5 Suppose a 95% symmetric* $t$-interval is applied to estimate a mean, but the sample data are non-normal. Then the probability that the confidence interval covers the mean is not necessarily equal to 0.95. Use a Monte Carlo experiment to estimate the coverage probability of the $t$-interval for random samples of \$X\^2(2) data with sample size $n$ = 20. Compare your $t$-interval results with the simulation results in Example 6.4. (The $t$-interval should be more robust to departures from normality than the interval for variance.)
-
-##### [Resposta]{.underline}
