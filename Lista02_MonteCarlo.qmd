@@ -511,24 +511,24 @@ Quando o tamanho da amostra aumenta, a precisão das estimativas de parâmetros 
 
 ##### c. Níveis de confiança: Exercício 6.4 ou 6.5 do livro da Rizzo
 
-*6.4 Suppose that* $X_1, . . . , X_n$ are a random sample from a lognormal distribution with unknown parameters. Construct a 95% confidence interval for the parameter $\mu$. Use a Monte Carlo method to obtain an empirical estimate of the confidence level.
+*6.4 Suppose that* $X_1, . . . , X_n$ *are a random sample from a lognormal distribution with unknown parameters. Construct a 95% confidence interval for the parameter* $\mu$*. Use a Monte Carlo method to obtain an empirical estimate of the confidence level.*
 
 ##### [Resposta]{.underline}
 
-Iremos gerar uma amostra de tamanho 30 a partir de uma distribuição lognormal padrão (com média logarítmica $𝜇 = 0$ e desvio padrão logarítmico $\sigma = 1$ ).
+Iremos gerar uma amostra de tamanho 50 a partir de uma distribuição lognormal padrão (com média logarítmica $𝜇 = 0$ e desvio padrão logarítmico $\sigma = 1$ ).
 
 O intervalo de confiança é calculado utilizando-se a fórmula:
 
 $$
-\left( \bar{y} - z_{\alpha/2} \cdot \frac{s_y}{\sqrt{n}}, \bar{y} + z_{\alpha/2} \cdot \frac{s_y}{\sqrt{n}} \right)
+\left( \bar{y} - 1.96 \cdot \frac{s_y}{\sqrt{30}}, \bar{y} + 1.96 \cdot \frac{s_y}{\sqrt{30}} \right)
 $$
 
 ```{r}
 set.seed(1)
-n <- 30
+n <- 50
 confid_interv <- replicate(20000, expr = 
   {
-    x <- rlnorm(n)
+    x <- rlnorm(n, 0, 1)
     y <- log(x)
     ybar <- mean(y)
     se <- sd(y)/sqrt(n)
@@ -538,8 +538,12 @@ L_confid_interv <- confid_interv[1, ]
 U_confid_interv <- confid_interv[2, ]
 
 print(paste("Quantidade de ICs que contém o valor da média logarítmica: ", sum(L_confid_interv < 0 & U_confid_interv > 0)))
-print(paste("Proporção de ICs que contêm o verdadeiro valor de mi: ", mean(L_confid_interv < 0 & U_confid_interv > 0)))
+print(paste("Proporção de ICs que contêm o verdadeiro valor de mi: ", 100 * mean(L_confid_interv < 0 & U_confid_interv > 0),"%"))
 
   
   
 ```
+
+Ao usarmos a simulação Monte Carlo para validar a construção de intervalos de confiança (IC) para a média logarítmica $\mu$ de uma distribuição lognormal, do total de 20.000 IC, temos 18.904 IC que contém o valor da média logarítmica ($\mu = 0$ para a distribuição lognormal padrão).
+
+Ainda, temos que a proporção de IC que contêm o valor 0, pela simulação, foi de 94,52%, um valor muito próximo de 95%.
