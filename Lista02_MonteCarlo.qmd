@@ -251,6 +251,13 @@ A redução da variância entre o uso de Monte Carlo padrão e o uso de Monte Ca
 
 ##### [Resposta]{.underline}
 
+Para a análise, foram utilizadas com as distribuições:
+
+1.  Distribuição $x^{2}$ com 1 grau de liberdade
+2.  Distribuição Γ (Gamma) com parâmetros $\alpha=\frac{3}{2} \quad \text{e} \quad \beta=2$
+3.  Distribuição exponencial
+4.  Distribuição Cauchy (com localização 2 e escala 1)
+
 ```{r q2c}
 set.seed(1)
 n <- 20000
@@ -297,7 +304,9 @@ print(var(imp_sampl_1)/var(imp_sampl_2))
 
 ```
 
-No caso em tela, a 1a. função produz um estimador mais eficiente do que a 2a. função, uma vez que a variância do estimador da 1a. função é menor do que a variância do estimador da 2a. função.
+No caso em tela, A média das estimativas estão próximas, pois todas estão estimando a mesma integral.
+
+A $1^{a}$ função importância produz um estimador mais eficiente, com maior precisão e menor variabilidade que as demais funções uma vez que possui a menor variância.
 
 ##### d. Stratified Importance Sampling - Exercício 5.15 do livro da Rizzo. (Não esquece de usar os quantís da função importância para definir os intervalos.)
 
@@ -536,7 +545,7 @@ print(mean(L_confid_interv < 0 & U_confid_interv > 0))
   
 ```
 
-# **(Caso decidamos fazer a 6.5)** 
+# **(Caso decidamos fazer a 6.5)**
 
 *6.5 Suppose a 95% symmetric* $t$-interval is applied to estimate a mean, but the sample data are non-normal. Then the probability that the confidence interval covers the mean is not necessarily equal to 0.95. Use a Monte Carlo experiment to estimate the coverage probability of the $t$-interval for random samples of \$X\^2(2) data with sample size $n$ = 20. Compare your $t$-interval results with the simulation results in Example 6.4. (The $t$-interval should be more robust to departures from normality than the interval for variance.)
 
