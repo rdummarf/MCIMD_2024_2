@@ -1,0 +1,67 @@
+---
+title: "Lista 3 - Bootstrap"
+author:
+  - name: Andreia Queiroz Correia Dummar (222103912)
+    id: aqcd
+    email: aqcorreia@gmail.com
+  - name: Fernando da Silva Costa (232102946)
+    id: fsc
+    email: 232102946@aluno.unb.br
+  - name: Roberto Jorge Dummar FIlho (232103587)
+    id: rjdf
+    email: 232103587@aluno.unb.br
+
+prefer-html: true
+format: html
+editor: visual
+---
+
+*Calcule, usando o Bootsrap, o erro padrão da acurácia  do modelo de classificação abaixo.*
+
+*\## Bootstrap SVM*
+
+*library(e1071)*
+
+*data("iris")*
+
+*model \<- svm(Species \~ ., data = iris)*
+
+*pred \<- fitted(model)*
+
+*class.table \<- table(pred, iris\$Species)*
+
+*class.table*
+
+*accuracy \<- sum(diag(class.table))/sum(class.table)*
+
+*accuracy*
+
+```{r}
+
+
+#install.packages("e1071")
+library(e1071)
+View(iris)
+#view("iris")
+data(iris)
+
+# Species ~ . separa a coluna Species de todas as outras
+model <- svm(Species ~ ., data = iris)
+
+summary(model)
+
+pred <- fitted(model)
+
+View(pred)
+
+class.table <- table(pred, iris$Species)
+
+View(class.table)
+
+accuracy <- sum(diag(class.table))/sum(class.table)
+
+accuracy
+
+#confusion_matrix <- table(Predicted = pred, Actual = iris$Species)
+#print(confusion_matrix)
+```
