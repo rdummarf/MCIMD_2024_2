@@ -36,32 +36,216 @@ editor: visual
 
 *accuracy*
 
-```{r}
+[Resposta:]{.underline}
 
+Conforme a orientação, iremos utilizar o Support Vector Machine (SVM), que é um algoritmo de aprendizado de máquina supervisionado que classifica os dados ao encontrar uma linha ou hiperplano ótimo que maximiza a distância entre cada classe em um espaço N-dimensional.
+
+Ainda, é utilizado no exemplo a base de dados "iris" que contém 50 instâncias de três tipos diferentes de plantas - setosa, virgínica e versicolor -, totalizando 150 instâncias.
+
+Para o cálculo da acurácia, foram realizados os seguintes passos:
+
+1.  Treinamento de um modelo SVM com toda a base de dados "iris".
+2.  Obtenção das previsões ajustadas a partir dos valores que o modelo prevê para os dados usados para ajustar o modelo.
+3.  Compara os valores das classes previstas com os valores das classe que estão na base.
+4.  Calcula a acurácia (valores previstos dividido pelo total da base)
+
+```{r}
+# Define o total de dígitos utilizados nos arredondamentos
+d_to_round <- 6
 
 #install.packages("e1071")
 library(e1071)
-View(iris)
-#view("iris")
 data(iris)
 
 # Species ~ . separa a coluna Species de todas as outras
 model <- svm(Species ~ ., data = iris)
 
-summary(model)
-
 pred <- fitted(model)
-
-View(pred)
 
 class.table <- table(pred, iris$Species)
 
-View(class.table)
-
+# Calcula a acurácia da tabela class.table
+# Numerador: diagonal principal, onde estão os valores preditos com as classes verdadeiras
+# Denominador: soma de todos os valores, independentemente do acerto
 accuracy <- sum(diag(class.table))/sum(class.table)
 
-accuracy
+original_accur <- round(accuracy,6)
 
-#confusion_matrix <- table(Predicted = pred, Actual = iris$Species)
-#print(confusion_matrix)
+print(paste0("Acurácia: ",  original_accur))
 ```
+
+O valor obtido da acurácia foi de 0,973333 para todos os dados presentes na base.
+
+### Amostragem por bootstrap
+
+Os métodos de bootstrap são uma classe de métodos de Monte Carlo não paramétricos que estimam a distribuição da população por amostragem com repetição. Ela se baseia vagamente na Lei dos Grandes Números, que afirma que se fizermos amostras repetidas vezes, os dados irão se aproximar dos dados reais da população.
+
+Para o problema proposto, iremos utilizar 3 maneiras diferentes de bootstrap para cálculo da acurácia.
+
+```{r}
+# Criação de dataframe para melhor visualização dos dados
+resultados <- data.frame(
+  Metodo = character(),
+  Acuracia = numeric(),
+  Desvio_Padrao = numeric(),
+  Acuracia = numeric(),
+  stringsAsFactors = FALSE
+)
+
+resultados <- rbind(resultados, data.frame(Modelo = "Original", Acuracia = original_accur, Desvio_Padrao = 0, Vies = 0))
+```
+
+#### 1º método - Bootstrapping no treinamento do modelo
+
+Iremos realizar a amostragem com repetição nos dados da base "iris", na mesma quantidade da base original (n = 150). Após essa amostragem, iremos utilizá-los para treinar o modelo e obter as previsões ajustadas a partir desses valores sorteados da base, calculando a acurácia para cada procedimento desse. Nisso, repetiremos esse cálculo 2.000 vezes.
+
+```{r}
+set.seed(1)
+B <- 2000 # número de replicações
+accur <- numeric(B) # armazenamento das replicações
+
+accur <- replicate(B, expr = {
+  new_sample_indices <- sample(nrow(iris), nrow(iris), replace = TRUE)
+  
+  new_sample <- iris[new_sample_indices, ]
+  
+  new_model <- svm(Species ~ ., data = new_sample)
+  
+  my_pred <- fitted(new_model)
+  
+  new_class.table <- table(my_pred, new_sample$Species)
+  
+  calculated_accuracy <- sum(diag(new_class.table)/sum(new_class.table))
+  
+  calculated_accuracy
+})
+mean_accur <- round(mean(accur),d_to_round)
+sd_accur <- round(sd(accur),d_to_round)
+bias_accur <- round(abs(mean_accur - original_accur),d_to_round)
+
+print(paste0("(1º método) Acurácia média em 2.000 repetições: ", mean_accur))
+print(paste0("Desvio-padrão da acurácia: ", sd_accur ))
+print(paste0("Diferença entre acurácia por bootstrap do 1º método e a acurácia do modelo: ", 
+           bias_accur))
+
+resultados <- rbind(resultados, data.frame(Modelo = "1º método", Acuracia = mean_accur, Desvio_Padrao = sd_accur, Vies = bias_accur))
+
+
+hist(accur, 
+     breaks = 30,  # Número de bins
+     col = "blue",  # Cor das barras
+     main = "Histograma das Acurácias (1º método)",
+     xlab = "Acurácia",
+     ylab = "Frequência")
+
+```
+
+Neste método, a acurácia média calculada para 2.000 repetições foi de 0,98016, com erro padrão de 0,012291. O viés foi de 0,006827.
+
+#### 2º método - Treinamento do modelo original e boostrapping para uso no modelo
+
+Inicialmente, ajustamos o modelo com todos os dados presentes na base original, conforme o enunciado da questão colocada no Aprender3.
+
+Após, realizamos a amostragem com repetição na base "iris", na mesma quantidade utilizada no 1º método (n=150), e usamos a função "predict" para prevermos a acurácia desses dados a partir do modelo originalmente treinado. Da mesma forma, repetimos esse cálculo 2.000 vezes.
+
+```{r}
+set.seed(1)
+B <- 2000 # número de replicações
+accur_2 <- numeric(B) # armazenamento das replicações
+
+accur_2 <- replicate(B, expr = {
+    new_sample_indices <- sample(nrow(iris), nrow(iris), replace = TRUE)
+    
+    new_sample <- iris[new_sample_indices, ]
+    
+    # Já carregada lá em cima
+    # model <- svm(Species ~ ., data = iris)
+    
+    my_pred <- predict(model, new_sample)
+    
+    new_class.table <- table(my_pred, new_sample$Species)
+    
+    calculated_accuracy <- sum(diag(new_class.table)/sum(new_class.table))
+    
+    calculated_accuracy
+})
+mean_accur_2 <- round(mean(accur_2),d_to_round)
+sd_accur_2 <- round(sd(accur_2),d_to_round)
+bias_accur_2 <- round(abs(mean_accur_2 - original_accur),d_to_round)
+
+print(paste0("(2º método) Acurácia média em 2.000 repetições: ", mean_accur_2))
+print(paste0("Desvio-padrão da acurácia: ", sd_accur_2 ))
+print(paste0("Diferença entre acurácia por bootstrap do 2º método e a acurácia do modelo: ", 
+            bias_accur_2))
+
+resultados <- rbind(resultados, data.frame(Modelo = "2º método", Acuracia = mean_accur_2, Desvio_Padrao = sd_accur_2, Vies = bias_accur_2))
+
+hist(accur_2, 
+     breaks = 30,  # Número de bins
+     col = "skyblue",  # Cor das barras
+     main = "Histograma das Acurácias (2º método)",
+     xlab = "Acurácia",
+     ylab = "Frequência")
+```
+
+Neste método, a acurácia média calculada para 2.000 repetições foi de 0,97305, com erro padrão de 0,013344. O viés foi de 0,000283.
+
+#### 3º método - Bootstrap de dados para ajuste do modelo e o não-sorteado para predição
+
+Iremos realizar a amostragem com repetição nos dados da base "iris", na mesma quantidade da base original (n = 150). Após essa amostragem, utilizamos esses dados para treinarmos o modelo e obter as previsões ajustadas.
+
+A diferença em relação ao 1º método é que os dados que não foram sorteados serão utilizados para realizar previsões, calculando a acurácia para cada procedimento desse.
+
+Assim como os outros métodos, iremos repetir esse cálculo 2.000 vezes.
+
+```{r}
+set.seed(1)
+B <- 2000 # número de replicações
+accur_3 <- numeric(B) # armazenamento das replicações
+
+accur_3 <- replicate(B, expr = {
+  new_sample_indices <- sample(nrow(iris), nrow(iris), replace = TRUE)
+  
+  new_sample <- iris[new_sample_indices, ]
+  
+  new_model <- svm(Species ~ ., data = new_sample)
+  
+  my_pred <- predict(new_model, newdata = iris[-new_sample_indices, ])
+  
+  new_class.table <- table(my_pred, iris[-new_sample_indices, "Species"])
+  
+  calculated_accuracy <- sum(diag(new_class.table)/sum(new_class.table))
+  
+  calculated_accuracy
+})
+mean_accur_3 <- round(mean(accur_3),d_to_round)
+sd_accur_3 <- round(sd(accur_3),d_to_round)
+bias_accur_3 <- round(abs(mean_accur_3 - original_accur),d_to_round)
+
+print(paste0("(3º método) Acurácia média em 2.000 repetições: ", mean_accur_3 * 100))
+print(paste0("Desvio-padrão da acurácia: ", sd_accur_3 ))
+print(paste0("Diferença entre acurácia por bootstrap do 3º método e a acurácia do modelo: ", 
+            bias_accur_3))
+
+resultados <- rbind(resultados, data.frame(Modelo = "3º método", Acuracia = mean_accur_3, Desvio_Padrao = sd_accur_3, Vies = bias_accur_3))
+
+hist(accur_3, 
+     breaks = 30,  # Número de bins
+     col = "lightblue",  # Cor das barras
+     main = "Histograma das Acurácias (3º método)",
+     xlab = "Acurácia",
+     ylab = "Frequência")
+
+```
+
+Neste método, a acurácia média calculada para 2.000 repetições foi de 0,957902, com erro padrão de 0,023436. O viés foi de 0,015431.
+
+#### Comentários finais
+
+```{r}
+print(resultados)
+```
+
+Dos três métodos analisados, o 3º método é o que produz a acurácia mais baixa, com desvio padrão e viés mais alto. Isto ocorre em razão de ser realizado o bootstrap de dados para ajuste do modelo e aqueles dados que não estão presentes no ajuste terem sido utilizados para predição, o que não é o procedimento adotado no 1º e no 2º método.
+
+Ainda, o 2º método produz o menor viés, pois os dados nos quais são realizados o bootstrap para ser realizada a predição são também utilizados no ajuste do modelo.
