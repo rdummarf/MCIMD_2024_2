@@ -16,4 +16,5 @@ config/.*
 
 # Ignorar todos os arquivos dentro de um diretório
 Lista02_MonteCarlo_files/
-Lista03_Bootsstrap_files/
+Lista03_Bootstrap_files/
+.Rproj.user
