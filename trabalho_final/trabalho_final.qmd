@@ -1,0 +1,67 @@
+---
+title: "Trabalho Final"
+author: "Roberto Jorge Dummar Filho"
+prefer-html: true
+format: html
+editor: visual
+---
+
+# PPCA/UnB : Métodos Computacionais Intensivos em Mineração de Dados
+
+## Professor: Donald Matthew Pianto
+
+## Introdução
+
+O presente trabalho final buscará aplicar o Latent Dirichlet Allocation (LDA), um modelo estatístico generativo para coleções de dados discretos tais como corpora de texto \[1\], na base de dados de perguntas de acesso à informação inquiridas ao Senado Federal, entre janeiro de 2022 e junho de 2024.
+
+## Lei de Acesso à Informação
+
+A Lei nº 12.527, de 2011 (Lei de Acesso à Informação - LAI) \[2\] regulamentou o direito de acesso à informação previsto na Constituição Federal, vinculando as entidades públicas e as entidades privadas que, de forma geral, recebem recursos públicos, a uma gestão transparente e a proteção da informação pessoal.
+
+A partir dela, são realizados pelos órgãos públicos dois tipos de transparência: a transparência ativa, na qual disponibilizam informações de interesse geral em seus sítios de internet, tais como a agenda de autoridades e a remuneração de seus servidores; e a transparência passiva, na qual recebem, tratam e respondem a pedidos de acesso à informação solicitados por qualquer pessoal.
+
+Ainda, os órgãos públicos de cada Poder publicam em seus sítios de internet relatórios estatísticos acerca das demandas recebidas e do perfil dos solicitantes, bem com a relação de perguntas e respostas, e o estado do seu atendimento (ex: respondido, negativo, respondido parcialmente etc).
+
+## Fonte dos Dados
+
+O Senado Federal \[3\] publica mensalmente relatórios estatísticos dos pedidos e dos assuntos tratados, bem como uma tabela com as perguntas e o estado do seu atendimento, sem incluir o texto das respostas fornecidas.
+
+Foram obtidos os relatórios em formato Office Open XML/Open Document e realizadas as seguintes operações para tratamento dos dados:
+
+1.  Remoção de quebras de linha e marcações de parágrafos desnecessários.
+2.  Cada tabela foi salva em uma aba da planilha, sendo incluído o mês/ano da informação.
+
+## Latent Dirichlet Allocation
+
+## Gibbs Sampling
+
+## Execução
+
+## Considerações Finais
+
+## Referências
+
+\[1\] Blei, David M., Andrew Y. Ng, and Michael I. Jordan. "Latent dirichlet allocation." *Journal of machine Learning research* 3.Jan (2003): 993-1022. <https://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf>
+
+\[2\] Lei nº 12.527, de 2011. <https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm>
+
+\[3\] Relatórios LAI. Senado Federal. <https://www12.senado.leg.br/transparencia/lai/relatorios-lai-1>
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
