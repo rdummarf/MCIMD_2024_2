@@ -17,7 +17,7 @@ link-citations: yes
 
 # Função para ler e ajustar as planilhas
 ler_e_ajustar_planilha <- function(nome_planilha) {
-  print(paste0("Planilha: ", nome_planilha))
+  #print(paste0("Planilha: ", nome_planilha))
   dados <- read_excel(caminho_arquivo, sheet = nome_planilha)
   # Ajuste os dados para ter o mesmo cabeçalho da primeira planilha
   dados <- dados %>%
@@ -41,7 +41,7 @@ cabecalho <- names(dados_primeira_planilha)
 dados_consolidados <- lapply(nomes_planilhas, ler_e_ajustar_planilha) %>%
   bind_rows()
 
-colnames(dados_consolidados) <- c("id", "ds_pedido", "st_pedido", "dt_periodo", "nm_aba")
+colnames(dados_consolidados) <- c("doc_id", "text", "st_pedido", "dt_periodo", "nm_aba")
 dados_consolidados$id <- seq_len(nrow(dados_consolidados))
 
 print(paste0("Linhas: ",nrow(dados_consolidados)))
@@ -70,22 +70,26 @@ library(flextable)
 library(ggplot2)
 library(lda)
 library(ldatuning)
+#install.packages("microbenchmark")
 library(microbenchmark)
 library(quanteda)
 library(RColorBrewer)
+#install.packages("readxl")
 library(readxl)
 library(reshape2)
 library(slam)
 library(stringr)
+#install.packages("textstem")
 library(textstem)
 library(tidyr)
 library(tidytext)
 library(tm)
 library(topicmodels)
 library(wordcloud)
+#install.packages("writexl")
 library(writexl)
 # activate klippy for copy-to-clipboard button
-klippy::klippy()
+#klippy::klippy()
 #install.packages("remotes")
 #remotes::install_github("rlesur/klippy")
 ```
@@ -136,10 +140,13 @@ padroes <- list(
 )
 
 # Remoção dos dois tipos de aspas duplas
-dados <- dados %>%
-  mutate(text = tolower(text)) %>%
-  mutate(text = gsub('"', '', text)) %>%
-  mutate(text = gsub('[\u201C\u201D"]', '', text))
+dados <- dados |> 
+  mutate(text = tolower(text)) |> 
+  mutate(text = gsub('"', '', text)) |> 
+  mutate(text = gsub('[\u201C\u201D"]', '', text)) |> 
+  mutate(text = gsub('/', ' ', text))
+         
+#print(dados)         
 
 dados <- dados %>%
   mutate(text2 = "")
@@ -164,6 +171,7 @@ dados$text2 <- gsub("atenciosamente", "", dados$text2)
 dados$text2 <- gsub("respeitosamente", "", dados$text2)
 dados$text2 <- gsub("att.", "", dados$text2)
 dados$text2 <- gsub("atte.", "", dados$text2)
+dados$text2 <- gsub("obrigado", "", dados$text2)
 
 
 #dados$ds_pedido2 <- dados$ds_pedido
@@ -178,6 +186,8 @@ dados$text2 <- gsub("\\b([A-Z])\\1{2,}\\b", "", dados$text2, ignore.case = TRUE)
 dados$text <- dados$text2
 dados <- dados %>%
   select(-text2)
+
+dados
 
 #salvar_df_excel(dados, "dados_consolidados2.xlsx")
 
@@ -247,8 +257,8 @@ tm::Corpus(DataframeSource(dados)) %>%
   tm::tm_map(stemDocument, language = "pt") -> corpustexto
 # inspect data
 
-#print(corpustexto)
-
+print(corpustexto)
+#inspect(corpustexto)
 ```
 
 

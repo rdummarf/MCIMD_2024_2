@@ -31,7 +31,25 @@ Foram obtidos os relatórios em formato Office Open XML/Open Document e realizad
 1.  Remoção de quebras de linha e marcações de parágrafos desnecessários.
 2.  Cada tabela foi salva em uma aba da planilha, sendo incluído o mês/ano da informação.
 
-## Latent Dirichlet Allocation
+## Latent Dirichlet Allocation (LDA)
+
+O Latent Dirichlet Allocation (LDA) é um modelo generativo probabilístico, sendo especificamente um modelo bayesiano hierárquico de três níveis, para uma coleção de dados discretos (como um corpora de texto).
+
+LDA é uma técnica amplamente adotada para ajustar modelos de tópicos. Ela opera tratando cada documento como uma mistura de tópicos, e cada tópico como uma mistura de palavras. Consequentemente, os documentos podem exibir sobreposições de conteúdo, semelhantes à fluidez observada no uso da linguagem natural, em vez de serem estritamente segregados em grupos distintos.
+
+![](images/clipboard-379997878.png)
+
+Pelo diagrama acima, temos que:
+
+-   $\alpha$ e $\beta$ são distribuições de Dirichlet.
+
+-   $\theta$ e $\phi$ são distribuições multinomiais.
+
+$\alpha$ é um parâmetro da distribuição de probabilidades de tópicos em relação a documentos.
+
+$\beta$ é um parâmetro da distribuição de probabilidades de palavras em relação a tópicos.
+
+-   Para um valor de $\alpha$ maior do que 1, a co
 
 ## Gibbs Sampling
 
@@ -47,21 +65,6 @@ Foram obtidos os relatórios em formato Office Open XML/Open Document e realizad
 
 \[3\] Relatórios LAI. Senado Federal. <https://www12.senado.leg.br/transparencia/lai/relatorios-lai-1>
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+\[10\] Latent Dirichlet Allocation (Part 1 of 2): [https://www.youtube.com/watch?v=T05t-SqKArY](https://www.youtube.com/watch?v=T05t-SqKArY&t=11s)
 
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
-```
-
-You can add options to executable code like this
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
+\[11\] Latent Dirichlet Allocation (Part 2 of 2): <https://www.youtube.com/watch?v=BaM1uiCpj_E>
