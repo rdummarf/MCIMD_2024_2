@@ -1,9 +1,9 @@
 ---
 title: "Trabalho Final"
 author: "Roberto Jorge Dummar Filho"
-prefer-html: true
-format: html
-editor: visual
+output:
+  html_document:
+    df_print: paged
 ---
 
 # PPCA/UnB : Métodos Computacionais Intensivos em Mineração de Dados
@@ -12,11 +12,11 @@ editor: visual
 
 ## Introdução
 
-O presente trabalho final buscará aplicar o Latent Dirichlet Allocation (LDA), um modelo estatístico generativo para coleções de dados discretos tais como corpora de texto \[1\], na base de dados de perguntas de acesso à informação inquiridas ao Senado Federal, entre janeiro de 2022 e junho de 2024.
+O presente trabalho final buscará aplicar o Latent Dirichlet Allocation (LDA), um modelo estatístico generativo para coleções de dados discretos tais como corpora de texto [1]$$1$$, na base de dados de perguntas de acesso à informação inquiridas ao Senado Federal, entre janeiro de 2022 e junho de 2024.
 
 ## Lei de Acesso à Informação
 
-A Lei nº 12.527, de 2011 (Lei de Acesso à Informação - LAI) \[2\] regulamentou o direito de acesso à informação previsto na Constituição Federal, vinculando as entidades públicas e as entidades privadas que, de forma geral, recebem recursos públicos, a uma gestão transparente e a proteção da informação pessoal.
+A Lei nº 12.527, de 2011 (Lei de Acesso à Informação - LAI) $$2$$ regulamentou o direito de acesso à informação previsto na Constituição Federal, vinculando as entidades públicas e as entidades privadas que, de forma geral, recebem recursos públicos, a uma gestão transparente e a proteção da informação pessoal.
 
 A partir dela, são realizados pelos órgãos públicos dois tipos de transparência: a transparência ativa, na qual disponibilizam informações de interesse geral em seus sítios de internet, tais como a agenda de autoridades e a remuneração de seus servidores; e a transparência passiva, na qual recebem, tratam e respondem a pedidos de acesso à informação solicitados por qualquer pessoal.
 
@@ -24,7 +24,7 @@ Ainda, os órgãos públicos de cada Poder publicam em seus sítios de internet 
 
 ## Fonte dos Dados
 
-O Senado Federal \[3\] publica mensalmente relatórios estatísticos dos pedidos e dos assuntos tratados, bem como uma tabela com as perguntas e o estado do seu atendimento, sem incluir o texto das respostas fornecidas.
+O Senado Federal $$3$$ publica mensalmente relatórios estatísticos dos pedidos e dos assuntos tratados, bem como uma tabela com as perguntas e o estado do seu atendimento, sem incluir o texto das respostas fornecidas.
 
 Foram obtidos os relatórios em formato Office Open XML/Open Document e realizadas as seguintes operações para tratamento dos dados:
 
@@ -55,7 +55,7 @@ Pelo diagrama acima, temos que:
 
         -   Para um valor de $\alpha$ maior do que 1, a maioria dos documentos conterá uma mistura de quase todos os tópicos, com proporções relativamente equilibradas entre eles.
         -   Para um valor de $\alpha$ igual a 1, haverá uma mistura média de tópicos nos documentos.
-        -   Para um valor de $\alpha$ menor do que 1, cada documento será dominado por poucos tópicos ou até um tópico, em casos extremos.
+        -   Para um valor de $\alpha$ menor do que 1, cad documento será dominado por poucos tópicos ou até um tópico, em casos extremos.
 
     -   $\beta$ é um parâmetro da distribuição de probabilidades de palavras presentes em tópicos.
 
@@ -94,7 +94,7 @@ No contexto da LDA, a Gibbs sampling funciona com dois princípios:
 
 ## Execução
 
-```{r carregarbibliotecas, warning=FALSE, message=FALSE}
+```{r prep1, echo=F, eval = F, message=FALSE, warning=FALSE}
 # set options
 options(stringsAsFactors = F)         # no automatic data transformation
 options("scipen" = 100, "digits" = 4) # suppress math annotation
@@ -142,7 +142,7 @@ Ao usar o pacote `quanteda`, foram removidas:
 2.  "Stopwords" em português.
 3.  Realizar o stemming das palavras
 
-```{r carregardados}
+```{r loaddata}
 dir_bases <- paste0(getwd(), "/bases/")
 caminho_arquivo <- paste0(dir_bases, "dados_consolidados.xlsx")
 
@@ -225,7 +225,7 @@ dados <- dados |>
   dplyr::select(-text2)
 ```
 
-```{r processardadosquanteda}
+```{r processdata}
 dados <- as.data.frame(dados)
 
 dados$text |> 
@@ -248,24 +248,23 @@ dim(ctxt)
 ctxt[1:5, 1:5]
 ```
 
-Após o processamento, verificamos o total de 1.762 documentos com 5.218 termos.
-
 Inicialmente, iremos executar um LDA não supervisionado para identificação dos tópicos presentes nos dados. A partir dessa informação, iremos executar um LDA semi-supervisionado.
 
 Como não há uma quantidade ideal de tópicos, é necessário análise com diferentes números. Após algumas análises, verificou-se que o ideal seria utilizar 10 tópicos com as 8 palavras em cada um.
 
 A matriz presente na variável *ddlda_topics* representa os 10 tópicos com as 8 palavras com maior probabilidade de aparecem em cada tópico. Os valores da probabilidade da matriz $\beta$ associados aparecem entre parênteses, que é a probabilidade da palavra aparecer no tópico.
 
-```{r lda_orientado_dados}
+```{r datadrivenlda}
 topicmodels::LDA(ctxt, k = 10, control = list(seed = 1)) -> ddlda
 ```
 
-```{r limpar_topicos_beta}
+```{r cleanbetatopics}
 # define number of topics
 ntopics = 10
 # define number of terms
 nterms = 8
 # generate table
+
 
 #If matrix == "beta" (default), returns a table with one row per topic and term, with columns
 #topic    Topic, as an integer
@@ -277,24 +276,25 @@ nterms = 8
 #gamma Probability of topic given document
 tidytext::tidy(ddlda, matrix = "beta") %>%
   dplyr::group_by(topic) %>%
-  dplyr::slice_max(beta, n = nterms) %>% 
+  dplyr::slice_max(beta, n = nterms) %>%
   dplyr::ungroup() %>%
   dplyr::arrange(topic, -beta) %>%
+  # Cria várias colunas
   dplyr::mutate(term = paste(term, " (", round(beta, 3), ")", sep = ""),
                 topic = paste("topic", topic),
                 topic = factor(topic, levels = c(paste("topic", 1:ntopics))),
                 top = rep(paste("top", 1:nterms), nrow(.)/nterms),
                 top = factor(top, levels = c(paste("top", 1:nterms)))) %>%
+  # Seleciona tudo menos a coluna beta
   dplyr::select(-beta) %>%
   tidyr::spread(topic, term) -> ddlda_top_terms
+
 ddlda_top_terms
-
-
 ```
 
 Abaixo, a matriz $\beta$ completa, com as palavras associadas com suas probabilidades em cada um dos 10 tópicos.
 
-```{r extrair_valores_beta}
+```{r extractbeta}
 ddlda
 # extract topics
 ddlda_topics <- tidy(ddlda, matrix = "beta")
@@ -306,19 +306,18 @@ print(ddlda_topics)
 
 Em seguida, há um modelo de tópicos semi-supervisionado, no qual é definido um dicionário contendo as palavras mais comuns de cada tópico, para guiar o LDA a separar os termos.
 
-```{r lda_com_dicionario}
+```{r seededlda}
 # semisupervised LDA
 dict <- dictionary(list(sessao = c("requer", "inform", "plena"),
                         ceaps = c("gast", "combust", "viag", "alug"),
-                        concurso = c("comiss", "concurs", "servid", "poss", "nomeaç", "analis", "vag"),
+                        concurso = c("comiss", "concurs", "servid", "poss", "nomeaç", "analis"),
                         pl = c("projet", "lei", "motiv", "andam"),
                         cn = c("senad", "feder", "congres", "nacion", "palác"),
-                        covid = c("pandem", "covid", "mort", "infect", "posit"),
+                        covid = c("pandem", "covid", "mort", "infect"),
                         gastos = c("gabinet", "parlamen", "pesso", "verba"),
-                        fumigeno = c("fumígen", "cigarr", "eletrôn", "fum", "tabag", "tabac"),
-                        pais = c("pact", "federaç", "federat", "estad"),
-                        tribunal = c("julgam", "impeach", "golp", "testemunh")
-                        
+                        tipodado = c("planilh", "arquiv", "csv", "pdf", "xml"),
+                        pais = c("pact", "federaç", "federat"),
+                        tribunal = c("julgam", "impeach")
                         ))
 #residual = TRUE: Este argumento indica que termos que não se encaixam nos tópicos definidos no dicionário devem ser incluídos em um tópico residual.
 tmod_slda <- seededlda::textmodel_seededlda(ctxt, 
@@ -333,7 +332,7 @@ seededlda::terms(tmod_slda)
 
 Para verificarmos como os tópicos são tratados ao longo do tempo, vamos plotar o seguinte gráfico:
 
-```{r mostrar_topicos_por_perioodo}
+```{r}
 
 # generate data frame
 
@@ -344,10 +343,9 @@ data.frame(tmod_slda$data$periodo, seededlda::topics(tmod_slda)) %>%
   #              Periodo = stringr::str_replace_all(Periodo, ".$", "0")) %>%
   dplyr::mutate_if(is.character, factor) -> topic_df
 # inspect
-topic_df
 ```
 
-```{r mostrar_grafico_topicos_mesano}
+```{r}
 topic_df %>%
   dplyr::group_by(Periodo, Tópico) %>%
   dplyr::summarise(freq = n()) %>%
@@ -363,7 +361,7 @@ No gráfico acima, vale notar que os pedidos de LAI relacionados a 'concurso' re
 
 ### Utilização de modelo orientado a dados
 
-Ao usar o modelo orientado a dados, não definimos inicialmente a quantidade de tópicos que queremos separar as palavras do corpus, mas utilizamos duas métricas, CaoJuan2009\[4\] e Deveaud2014\[5\].
+Ao usar o modelo orientado a dados, não definimos inicialmente a quantidade de tópicos que queremos separar as palavras do corpus, mas utilizamos duas métricas, CaoJuan2009$$4$$ e Deveaud2014$$5$$.
 
 O algoritmo de CaoJuan2009 introduz a métrica de densidade dos tópicos, penalizando conjuntos de tópicos que sejam muito semelhantes entre si. Quanto menor a densidade, maior a diversidade de tópicos.
 
@@ -371,7 +369,7 @@ O algoritmo de Deveaud2014 leva em conta a coerência dos tópicos, ou seja, a s
 
 Ao contrário do modelo não-supervisionado, foi preferido utilizar aqui o *stemming* no lugar da *lematização*.
 
-```{r modelo_orientado_dados_mod, message=FALSE, warning=FALSE}
+```{r tm2, message=FALSE, warning=FALSE}
 # load data
 #textdata <- base::readRDS(url("https://slcladal.github.io/data/sotu_paragraphs.rda", "rb"))
 
@@ -400,7 +398,7 @@ str(corpustexto)
 
 Em razão dos pedidos de acesso à informação tratarem de assuntos repetidos, optou-se por utilizar um valor mínimo de termos igual a 7.
 
-```{r mod_2}
+```{r tm3a}
 # compute document term matrix with terms >= minimumFrequency
 minimumFrequency <- 7
 DTM <- tm::DocumentTermMatrix(corpustexto, 
@@ -410,7 +408,7 @@ dim(DTM)
 
 ```
 
-```{r mod_3}
+```{r}
 sel_idx <- slam::row_sums(DTM) > 0
 DTM <- DTM[sel_idx, ]
 dados <- dados[sel_idx, ]
@@ -418,7 +416,7 @@ dados <- dados[sel_idx, ]
 dim(DTM)
 ```
 
-```{r mod_4, message=FALSE, warning=FALSE}
+```{r tm3b, message=FALSE, warning=FALSE}
 # create models with different number of topics
 result <- ldatuning::FindTopicsNumber(
   DTM,
@@ -430,7 +428,7 @@ result <- ldatuning::FindTopicsNumber(
 )
 ```
 
-```{r mod_5, message=FALSE, warning=FALSE}
+```{r tm3c, message=FALSE, warning=FALSE}
 #print(result)
 FindTopicsNumber_plot(result)
 ```
@@ -439,7 +437,7 @@ Pela análise dos gráficos acima, como a própria coluna de etiquetas da direit
 
 Abaixo, iremos executar 10.000 interações de amostragem de Gibbs para visualização dos tópicos.
 
-```{r mod_6}
+```{r tm4}
 # number of topics
 K <- 8
 # set random number generator seed
@@ -454,7 +452,7 @@ Após a execução da amostragem de Gibbs, são obtidos os valores de $\alpha$ ,
 
 $a$ : parâmetro de Dirichlet relativo a distribuição dos tópicos. No caso abaixo, o valor do parâmetro calculado foi de 6.25, informando que cada documento possui uma distribuição média de tópicos.
 
-```{r mod_7}
+```{r}
 tmResult <- posterior(topicModel)
 
 attr(topicModel, "alpha")
@@ -462,21 +460,21 @@ attr(topicModel, "alpha")
 
 $\theta$ : matriz que contém as distribuições de tópicos para cada documento
 
-```{r mod_8}
+```{r}
 theta <- tmResult$topics
 head(theta)
 ```
 
 $\phi$ : matriz que contém as distribuições de termos para cada tópico
 
-```{r mod_9}
+```{r}
 phi <- tmResult$terms
 head(phi)
 ```
 
 Abaixo, podemos verificar como fica a distribuição dos termos para cada tópico:
 
-```{r mod_10}
+```{r}
 # reset topic names
 topicNames <- apply(terms(topicModel, 8), 2, paste, collapse = " ")
 topicNames
@@ -484,7 +482,7 @@ topicNames
 
 Abaixo, temos os 8 termos com maiores valores de $\beta$ que aparecem em cada tópico.
 
-```{r mod_11}
+```{r tm6}
 
 # create a data frame from the topic model data
 tidytext::tidy(topicModel, matrix = "beta") %>% 
@@ -513,7 +511,7 @@ topterms
 
 Ainda, ilustrativamente, temos as palavras mais associadas com 'concurso'. Durante o período analisado, verificou-se que houve vários pedidos de perguntas associadas ao cargo de 'consultor legislativo', bem como outras palavras associadas a 'concurso' como 'vagas', 'questões', 'cargos' etc.
 
-```{r mod_12, fig.width=4, fig.height=4, fig.align='center', message=FALSE, warning=F}
+```{r wordcloud, fig.width=4, fig.height=4, fig.align='center', message=FALSE, warning=F}
 # visualize topics as word cloud
 # choose topic of interest by a term contained in its name
 
@@ -536,7 +534,7 @@ wordcloud(words, probabilities, random.order = FALSE, color = mycolors)
 
 Abaixo, temos a distribuição dos tópicos em cada documento de acordo com a cor representada na legenda. Como o valor de $\alpha$ é igual a 6.25, verifica-se que há uma distribuição menos concentrada de um só tópico para cada documento.
 
-```{r mod_13}
+```{r}
 exampleIds <- c(2, 100, 200, 300, 400)
 N <- length(exampleIds)  # Number of example documents
 
@@ -568,7 +566,7 @@ Ao contrário do experimento anterior, iremos executar o LDA determinando um val
 
 No caso, iremos utilizar o valor de $\alpha$ = 0.4.
 
-```{r mod_alfa_pre}
+```{r tm12}
 # generate new LDA model with low alpha
 topicModel2 <- LDA(DTM, K, method="Gibbs", 
                    control=list(iter = 10000, verbose = 1000, alpha = 0.4))
@@ -586,7 +584,7 @@ topicNames2 <- apply(terms(topicModel2, 5), 2, paste, collapse = " ")
 #topicNames
 ```
 
-```{r mod_alfa_pre_2, results="hide", echo=T, warning=FALSE, message=FALSE, fig.width=10, fig.height=6, fig.align='center'}
+```{r vis3, results="hide", echo=T, warning=FALSE, message=FALSE, fig.width=10, fig.height=6, fig.align='center'}
 # get topic proportions form example documents
 topicProportionExamples2 <- theta2[exampleIds,]
 colnames(topicProportionExamples2) <- topicNames2
@@ -604,7 +602,7 @@ ggplot(data = vizDataFrame, aes(topic, value, fill = document), ylab = "proporti
 
 Pelo acima, verificamos que para um valor de $\alpha$ = 0.4, há, de fato, uma maior definição de documentos relacionados a tópicos específicos, indicando uma associação maior de tópicos relacionados a documentos.
 
-```{r mod_alfa_pre_3}
+```{r tm14}
 # mean probabilities over all paragraphs
 #print(theta)
 #print(colSums(theta))
@@ -621,7 +619,7 @@ soP <- sort(topicProportions, decreasing = TRUE)
 paste(round(soP, 5), ":", names(soP))
 ```
 
-```{r mod_alfa_pre_4}
+```{r tm16}
 countsOfPrimaryTopics <- rep(0, K)
 names(countsOfPrimaryTopics) <- topicNames
 for (i in 1:nDocs(DTM)) {
@@ -637,7 +635,7 @@ so
 paste(so, ":", names(so))
 ```
 
-```{r mod_alfa_pre_5}
+```{r tm18}
 # selected by a term in the topic name (e.g. 'militari')
 topicToFilter <- grep('legisl', topicNames)[1] 
 topicThreshold <- 0.2
@@ -657,20 +655,20 @@ Procurou-se realizar dois modelos: um orientado ao conhecedor do negócio, nos q
 
 ## Referências
 
-\[1\] Blei, David M., Andrew Y. Ng, and Michael I. Jordan. "Latent dirichlet allocation." *Journal of machine Learning research* 3.Jan (2003): 993-1022. <https://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf>
+[1] Blei, David M., Andrew Y. Ng, and Michael I. Jordan. "Latent dirichlet allocation." *Journal of machine Learning research* 3.Jan (2003): 993-1022. [https://www.jmlr.org/papers/volume3/blei03a/blei03a.pdf](#0){.uri}
 
-\[2\] Lei nº 12.527, de 2011. <https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm>
+[2] Lei nº 12.527, de 2011. <https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12527.htm>
 
-\[3\] Relatórios LAI. Senado Federal. <https://www12.senado.leg.br/transparencia/lai/relatorios-lai-1>
+[3] Relatórios LAI. Senado Federal. <https://www12.senado.leg.br/transparencia/lai/relatorios-lai-1>
 
-\[4\] Cao et al. 2009. <https://ladal.edu.au/topic.html#ref-cao2009density>
+[4] Cao et al. 2009. [https://ladal.edu.au/topic.html#ref-cao2009density](#0){.uri}
 
-\[5\] Deveaud, SanJuan, and Bellot 2014. <https://ladal.edu.au/topic.html#ref-deveaud2014accurate>
+[5] Deveaud, SanJuan, and Bellot 2014. [https://ladal.edu.au/topic.html#ref-deveaud2014accurate](#0){.uri}
 
-\[10\] Latent Dirichlet Allocation (Part 1 of 2): [https://www.youtube.com/watch?v=T05t-SqKArY](https://www.youtube.com/watch?v=T05t-SqKArY&t=11s)
+[a] Latent Dirichlet Allocation (Part 1 of 2): [https://www.youtube.com/watch?v=T05t-SqKArY](#0)
 
-\[11\] Latent Dirichlet Allocation (Part 2 of 2): <https://www.youtube.com/watch?v=BaM1uiCpj_E>
+[b] Latent Dirichlet Allocation (Part 2 of 2): [https://www.youtube.com/watch?v=BaM1uiCpj_E](#0){.uri}
 
-\[12\] Modelagem de tópicos com LDA, parte 1. <https://www.youtube.com/watch?v=7g-mgBa1F5k>
+[c] Modelagem de tópicos com LDA, parte 1. [https://www.youtube.com/watch?v=7g-mgBa1F5k](#0){.uri}
 
-\[13\] Modelagem de tópicos com LDA, parte 2. <https://www.youtube.com/watch?v=f01VXxK9DVs>
+[d] Modelagem de tópicos com LDA, parte 2. [https://www.youtube.com/watch?v=f01VXxK9DVs](#0){.uri}

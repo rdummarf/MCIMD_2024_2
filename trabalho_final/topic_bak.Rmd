@@ -476,15 +476,15 @@ topicModel
 ```{r}
 # save results
 tmResult <- posterior(topicModel)
-tmResult
+#tmResult
 # save theta values
 theta <- tmResult$topics
 # save beta values
 beta <- tmResult$terms
-beta
+#beta
 # reset topic names
 topicNames <- apply(terms(topicModel, 5), 2, paste, collapse = " ")
-topicNames
+#topicNames
 ```
 
 Depending on the size of the vocabulary, the collection size and the number K, the inference of topic models can take a very long time. This calculation may take several minutes. If it takes too long, reduce the vocabulary in the DTM by increasing the minimum frequency in the previous step.
@@ -493,6 +493,25 @@ Let's take a look at the 10 most likely terms within the term probabilities `bet
 
 ```{r tm6}
 # create a data frame from the topic model data
+tidytext::tidy(topicModel, matrix = "beta") %>% 
+  # ensure topics are factors with specific levels
+  dplyr::mutate(topic = paste0("topic", as.character(topic)),
+                topic = factor(topic, levels = paste0("topic", 1:20))) %>%
+  # group the data by topic
+  dplyr::group_by(topic) %>%
+  # arrange terms within each topic by beta value (ascending)
+  dplyr::arrange(topic, -beta) %>% 
+  # select the top 10 terms with the highest beta values for each topic
+  dplyr::top_n(10) %>%
+  # add beta to term
+  dplyr::mutate(term = paste0(term, " (", round(beta, 3), ")")) %>%
+  # remove the beta column as it is now part of the term string
+  dplyr::select(-beta) %>%  
+  # ungroup the data frame
+  dplyr::ungroup() -> a
+
+a
+
 tidytext::tidy(topicModel, matrix = "beta") %>% 
   # ensure topics are factors with specific levels
   dplyr::mutate(topic = paste0("topic", as.character(topic)),

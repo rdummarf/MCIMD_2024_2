@@ -199,8 +199,9 @@ A partir dos dados consolidados de pedidos de acesso à informação de 2022 a j
 1. Texto foi convertido em minúscula
 2. Como a parte principal de uma pergunta começa após alguns verbos característicos (ex: solicito, requeiro etc), foi realizada a remoção da parte anterior.
 3. Foram removidas sinais específicos (ex: aspas duplas, aspas curvas, nº)
-4. Foram removidas algunas palavras de encerramento de e-mail (ex: por favor, atenciosamente), de marcação de imprensa (sic)
-5. Foram removidas palavras com 3 ou mais letras repetidas, por se tratarem de ocultação de informações pessoais.
+4. Foram removidas frases que são comuns aos pedidos (ex: lei de acesso à informação)
+5. Foram removidas algunas palavras de encerramento de e-mail (ex: por favor, atenciosamente), de marcação de imprensa (sic)
+6. Foram removidas palavras com 3 ou mais letras repetidas, por se tratarem de ocultação de informações pessoais.
 
 
 ```{r}
@@ -226,17 +227,17 @@ processar_texto <- function(texto, padrao) {
 }
 
 padroes <- list(
-  "\\b[Ss]olicit\\w*\\b",  # Captura palavras que começam com "solicit"
-  "\\b[Oo]bter\\b",        # Captura a palavra "obter"
-  "\\b[Rr]equei\\w*\\b",     # Captura palavras que começam com "reque"
-  "\\b[Ss]aber\\b",        # Captura a palavra "saber"
-  "\\b[Dd]isponibilizar\\b", # Captura a palavra "disponibilizar"
-  "\\b[Rr]eceb\\w*\\b",       # Captura a palavra "receber"
-  "\\b[Gg]ostaria\\s+de\\s+\\w+\\b", # Captura "gostaria de" seguido de uma palavra
-  "\\b[Gg]ostaria\\s+que\\b", # Captura a expressão "gostaria de"
-  "\\b[Nn]ecessito\\s+de\\b", # Captura a expressão "necessito de"
-  "\\b[Nn]ecessito\\s+da\\b", # Captura a expressão "necessito da"
-  "\\b[Nn]ecessito\\s+do\\b" # Captura a expressão "necessito do"
+  "\\b[s]olicit\\w*\\b",  # Captura palavras que começam com "solicit"
+  "\\b[o]bter\\b",        # Captura a palavra "obter"
+  "\\b[r]equei\\w*\\b",     # Captura palavras que começam com "reque"
+  "\\b[s]aber\\b",        # Captura a palavra "saber"
+  "\\b[d]isponibilizar\\b", # Captura a palavra "disponibilizar"
+  "\\b[r]eceb\\w*\\b",       # Captura a palavra "receber"
+  "\\b[g]ostaria\\s+de\\s+\\w+\\b", # Captura "gostaria de" seguido de uma palavra
+  "\\b[g]ostaria\\s+que\\b", # Captura a expressão "gostaria de"
+  "\\b[n]ecessito\\s+de\\b", # Captura a expressão "necessito de"
+  "\\b[n]ecessito\\s+da\\b", # Captura a expressão "necessito da"
+  "\\b[n]ecessito\\s+do\\b" # Captura a expressão "necessito do"
 )
 
 # Remoção dos dois tipos de aspas duplas
@@ -244,6 +245,7 @@ dados <- dados %>%
   mutate(text = tolower(text)) %>%
   mutate(text = gsub('"', '', text)) %>%
   mutate(text = gsub('[\u201C\u201D"]', '', text))
+  mutate(text = gsub('/', ' ', text))
 
 dados <- dados %>%
   mutate(text2 = "")
@@ -268,6 +270,7 @@ dados$text2 <- gsub("atenciosamente", "", dados$text2)
 dados$text2 <- gsub("respeitosamente", "", dados$text2)
 dados$text2 <- gsub("att.", "", dados$text2)
 dados$text2 <- gsub("atte.", "", dados$text2)
+dados$text2 <- gsub("obrigado", "", dados$text2)
 
 
 #dados$ds_pedido2 <- dados$ds_pedido
@@ -290,21 +293,19 @@ dados <- dados %>%
 Inicialmente, será executado um LDA não supervisionado para identificar os tópicos presentes nos pedidos de acesso à informação. Para isso, será utilizado o pacote `topicmodels` para calcular o modelo LDA e o pacote `ldatuning` para determinar o número ideal de tópicos.
 
 
-
 ```{r loaddata}
 dados <- as.data.frame(dados)
 
-dados$text %>%
-  # tokenise
+dados$text |> 
   quanteda::tokens(remove_punct = TRUE,       # remove punctuation 
                    remove_symbols = TRUE,     # remove symbols 
-                   remove_number = TRUE) %>%  # remove numbers
-  # remove stop words
-  quanteda::tokens_select(pattern = stopwords("pt"), selection = "remove") %>%
-  # stemming
-  quanteda::tokens_wordstem() %>%
-  # convert to document-frequency matrix
+                   remove_number = TRUE) |>  # remove numbers
+  quanteda::tokens_select(pattern = stopwords("pt"), selection = "remove") |> 
+
+  quanteda::tokens_wordstem(language="portuguese")  |> 
   quanteda::dfm(tolower = T) -> ctxt
+head(ctxt, n = 100)
+
 # add docvars
 docvars(ctxt, "status") <- ctxt$status
 docvars(ctxt, "periodo") <- ctxt$periodo
@@ -377,7 +378,7 @@ ddlda
 # extract topics
 ddlda_topics <- tidy(ddlda, matrix = "beta")
 # inspect
-head(ddlda_topics, 20)
+head(ddlda_topics, 2000)
 ```
 
 The purpose of this initial step, in which we generate data-driven unsupervised topic models, is to identify the number of coherent topics present in the data and to determine the key terms associated with these topics. These key terms will then be used as seed terms in the next step: the supervised, seeded topic model. This approach ensures that the supervised model is grounded in the actual thematic structure of the data set, enhancing the accuracy and relevance of the identified topics.
@@ -393,6 +394,7 @@ select(ddlda_topics, term) |> unique() |> filter(str_detect(term, "agri"))
 
 ddlda_topics %>%  select(term) %>% unique() %>% filter(str_detect(term, "agri"))
 ```
+
 
 ```{r seededlda}
 # semisupervised LDA
