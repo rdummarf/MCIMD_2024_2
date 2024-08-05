@@ -1,6 +1,6 @@
 ---
 title: "Trabalho Final"
-author: "Roberto Jorge Dummar Filho"
+author: "Roberto Jorge Dummar Filho (232103587)"
 prefer-html: true
 format: html
 editor: visual
@@ -667,10 +667,16 @@ Procurou-se realizar dois modelos: um orientado ao conhecedor do negócio, nos q
 
 \[5\] Deveaud, SanJuan, and Bellot 2014. <https://ladal.edu.au/topic.html#ref-deveaud2014accurate>
 
-\[10\] Latent Dirichlet Allocation (Part 1 of 2): [https://www.youtube.com/watch?v=T05t-SqKArY](https://www.youtube.com/watch?v=T05t-SqKArY&t=11s)
+## Vídeos sobre LDA que consolidaram o conhecimento
 
-\[11\] Latent Dirichlet Allocation (Part 2 of 2): <https://www.youtube.com/watch?v=BaM1uiCpj_E>
+\[a\] Latent Dirichlet Allocation (Part 1 of 2): [https://www.youtube.com/watch?v=T05t-SqKArY](https://www.youtube.com/watch?v=T05t-SqKArY&t=11s)
 
-\[12\] Modelagem de tópicos com LDA, parte 1. <https://www.youtube.com/watch?v=7g-mgBa1F5k>
+\[b\] Latent Dirichlet Allocation (Part 2 of 2): <https://www.youtube.com/watch?v=BaM1uiCpj_E>
 
-\[13\] Modelagem de tópicos com LDA, parte 2. <https://www.youtube.com/watch?v=f01VXxK9DVs>
+\[c\] Modelagem de tópicos com LDA, parte 1. <https://www.youtube.com/watch?v=7g-mgBa1F5k>
+
+\[d\] Modelagem de tópicos com LDA, parte 2. <https://www.youtube.com/watch?v=f01VXxK9DVs>
+
+## Código no GitHub
+
+Os arquivos deste trabalho estão disponíveis no Github, no endereço:
