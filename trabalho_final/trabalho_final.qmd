@@ -344,7 +344,7 @@ data.frame(tmod_slda$data$periodo, seededlda::topics(tmod_slda)) %>%
   #              Periodo = stringr::str_replace_all(Periodo, ".$", "0")) %>%
   dplyr::mutate_if(is.character, factor) -> topic_df
 # inspect
-topic_df
+head(topic_df, 10)
 ```
 
 ```{r mostrar_grafico_topicos_mesano}
@@ -410,6 +410,8 @@ dim(DTM)
 
 ```
 
+Pelos critérios acima, temos 1.763 documentos com 1.029 termos que aparecem pelo menos 7 vezes.
+
 ```{r mod_3}
 sel_idx <- slam::row_sums(DTM) > 0
 DTM <- DTM[sel_idx, ]
@@ -445,7 +447,7 @@ K <- 8
 # set random number generator seed
 set.seed(1)
 # compute the LDA model, inference via 1000 iterations of Gibbs sampling
-topicModel <- topicmodels::LDA(DTM, K, method="Gibbs", control=list(iter = 10000, verbose = 500))
+topicModel <- topicmodels::LDA(DTM, K, method="Gibbs", control=list(iter = 10000, verbose = 1000))
 
 topicModel
 ```
@@ -471,7 +473,7 @@ $\phi$ : matriz que contém as distribuições de termos para cada tópico
 
 ```{r mod_9}
 phi <- tmResult$terms
-head(phi)
+head(phi, 10)
 ```
 
 Abaixo, podemos verificar como fica a distribuição dos termos para cada tópico:
@@ -679,4 +681,4 @@ Procurou-se realizar dois modelos: um orientado ao conhecedor do negócio, nos q
 
 ## Código no GitHub
 
-Os arquivos deste trabalho estão disponíveis no Github, no endereço:
+Os arquivos deste trabalho estão disponíveis no Github, no endereço: <https://github.com/rdummarf/MCIMD_2024_2/tree/main/trabalho_final>
